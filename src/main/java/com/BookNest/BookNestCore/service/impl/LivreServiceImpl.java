@@ -5,13 +5,9 @@ import com.BookNest.BookNestCore.mapper.LivreMapper;
 import com.BookNest.BookNestCore.model.Livre;
 import com.BookNest.BookNestCore.repository.LivreRepository;
 import com.BookNest.BookNestCore.service.LivreService;
-import org.apache.velocity.exception.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -24,19 +20,25 @@ public class LivreServiceImpl implements LivreService {
         this.livreRepository = livreRepository;
     }
 
+
     @Override
+    public LivreDTO getLivreById(Long id) {
+        Livre livre = livreRepository.findById(id)
+                .orElse(null);
+        if(livre != null){
+            return LivreMapper.INSTANCE.livreToLivreDTO(livre);
+        }else{
+            return null;
+        }
+
+    }
+/*
+ @Override
     public List<LivreDTO> getAllLivres() {
         List<Livre> livres = livreRepository.findAll();
         return livres.stream()
                 .map(LivreMapper.INSTANCE::livreToLivreDTO)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public LivreDTO getLivreById(Long id) {
-        Livre livre = livreRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Livre pas trouvé pour l'id :" + id));
-        return LivreMapper.INSTANCE.livreToLivreDTO(livre);
     }
 
     @Override
@@ -63,6 +65,6 @@ public class LivreServiceImpl implements LivreService {
     @Override
     public void deleteLivre(Long id) {
         livreRepository.deleteById(id);
-    }
+    }*/
 
 }
