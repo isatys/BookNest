@@ -8,13 +8,11 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -44,6 +42,16 @@ public class LivreController {
         }
     }
 
+    public ResponseEntity<?> createLivre(
+            @Parameter(description = "Détails du livre à créer", required = true) @Valid @RequestBody LivreDTO livreDTO) {
+        LivreDTO createdLivreDTO = livreService.createLivre(livreDTO);
+        if (createdLivreDTO.getAuteur() != null  && createdLivreDTO.getGenre()!= null || createdLivreDTO.getGenre().isEmpty() && createdLivreDTO.getTitre()!= null || createdLivreDTO.getTitre().isEmpty()) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdLivreDTO);
+
+        }else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Il manque des données pour l'Id: " + createdLivreDTO.getId());
+        }
+    }
     /*@Operation(summary = "Récupérer tous les livres", description = "Récupère la liste de tous les livres disponibles")
     @GetMapping
     public ResponseEntity<List<LivreDTO>> getAllLivres() {
@@ -56,12 +64,7 @@ public class LivreController {
             @ApiResponse(responseCode = "400", description = "Requête invalide"),
             @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
     })
-    @PostMapping
-    public ResponseEntity<LivreDTO> createLivre(
-            @Parameter(description = "Détails du livre à créer", required = true) @Valid @RequestBody LivreDTO livreDTO) {
-        LivreDTO createdLivreDTO = livreService.createLivre(livreDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdLivreDTO);
-    }
+
 
     @Operation(summary = "Mettre à jour un livre", description = "Met à jour les détails d'un livre existant en fonction de son identifiant")
     @ApiResponse(responseCode = "200", description = "Livre mis à jour avec succès", content = @Content(schema = @Schema(implementation = LivreDTO.class)))
