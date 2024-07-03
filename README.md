@@ -39,16 +39,10 @@ spring.datasource.username=utilisateur
 spring.datasource.password=mot_de_passe
 ```
 
-# Accéder à la base de données Postgres
+# Démarrer l'Application
 
-Voici la commande pour la db booknest: 
-
-``sql -U username -d booknest``
-
-# Accéder au Swagger
-
-Démarrer l'application, puis accéder à l'URL suivante :
+Pour démarrer l'application, exécutez la commande suivante :
 
  ```bash
-http://localhost:9091/swagger-ui/index.html#/
+./mvnw spring-boot:run
 ```
