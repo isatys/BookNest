@@ -28,36 +28,53 @@ public class LivreServiceImpl implements LivreService {
         this.auteurRepository = auteurRepository;
     }
 
-
+    /**
+     * Récupère un livre par son identifiant.
+     *
+     * @param id l'identifiant du livre
+     * @return le DTO du livre si trouvé, sinon null
+     */
     @Override
     public LivreDTO getLivreById(Long id) {
         Livre livre = livreRepository.findById(id)
                 .orElse(null);
-        if(livre != null){
+        if (livre != null) {
             return LivreMapper.INSTANCE.livreToLivreDTO(livre);
-        }else{
+        } else {
             return null;
         }
-
     }
-    //TODO gerer le cas ou les auteurs n'existe pas dans la base de donnees
+
+    /**
+     * Crée un nouveau livre.
+     * TODO : Gérer le cas où l'auteur n'existe pas dans la base de données.
+     *
+     * @param livreDTO le DTO du livre à créer
+     * @return le DTO du livre créé
+     */
     @Override
     @Transactional
     public LivreDTO createLivre(LivreDTO livreDTO) {
-        Livre livre ;
+        Livre livre;
         // Récupérer l'auteur du DTO
         Auteur auteur = auteurRepository.findByNom(livreDTO.getAuteur().getNom());
         // Si l'auteur n'existe pas, le créer avec le nom seulement
-        if(livreDTO.getAuteur().getNom() != null){
+        if (livreDTO.getAuteur().getNom() != null) {
             livre = LivreMapper.INSTANCE.livreDTOToLivre(livreDTO);
             livre.setAuteur(auteur);
-        }else{
+        } else {
             return null;
         }
 
-
         return LivreMapper.INSTANCE.livreToLivreDTO(livreRepository.save(livre));
     }
+
+    /**
+     * Supprime un livre par son identifiant.
+     *
+     * @param id l'identifiant du livre
+     * @return un message de confirmation de suppression
+     */
     @Override
     public String deleteLivre(Long id) {
         if (!livreRepository.existsById(id)) {
@@ -67,25 +84,33 @@ public class LivreServiceImpl implements LivreService {
         return "Livre avec l'ID " + id + " a été supprimé avec succès.";
     }
 
- @Override
+    /**
+     * Récupère tous les livres.
+     *
+     * @return une liste de DTOs de livres
+     */
+    @Override
     public List<LivreDTO> getAllLivres() {
-     List<Livre> livres = livreRepository.findAll();
-     if (livres.isEmpty()) {
-         throw new EntityNotFoundException("Aucun livre trouvé.");
-     }
-     return livres.stream().map(LivreMapper.INSTANCE::livreToLivreDTO).collect(Collectors.toList());
- }
-}
+        List<Livre> livres = livreRepository.findAll();
+        if (livres.isEmpty()) {
+            throw new EntityNotFoundException("Aucun livre trouvé.");
+        }
+        return livres.stream().map(LivreMapper.INSTANCE::livreToLivreDTO).collect(Collectors.toList());
+    }
 
-/*
-
+    /**
+     * Met à jour un livre existant.
+     *
+     * @param id       l'identifiant du livre à mettre à jour
+     * @param livreDTO le DTO du livre avec les nouvelles informations
+     * @return le DTO du livre mis à jour si trouvé, sinon null
+     */
     @Override
     public LivreDTO updateLivre(Long id, LivreDTO livreDTO) {
         Livre existingLivre = livreRepository.findById(id).orElse(null);
         if (existingLivre != null) {
             existingLivre.setTitre(livreDTO.getTitre());
             existingLivre.setGenre(livreDTO.getGenre());
-            // Mise à jour des autres champs si nécessaire
 
             Livre updatedLivre = livreRepository.save(existingLivre);
             return LivreMapper.INSTANCE.livreToLivreDTO(updatedLivre);
@@ -93,6 +118,4 @@ public class LivreServiceImpl implements LivreService {
         return null;
     }
 
-    */
-
-
+}
