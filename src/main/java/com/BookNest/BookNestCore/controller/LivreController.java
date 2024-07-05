@@ -88,19 +88,20 @@ public class LivreController {
 
     }
 
-
-
-    /*
     @Operation(summary = "Mettre à jour un livre", description = "Met à jour les détails d'un livre existant en fonction de son identifiant")
     @ApiResponse(responseCode = "200", description = "Livre mis à jour avec succès", content = @Content(schema = @Schema(implementation = LivreDTO.class)))
     @ApiResponse(responseCode = "404", description = "Livre non trouvé")
     @PutMapping("/{id}")
-    public ResponseEntity<LivreDTO> updateLivre(
+    public ResponseEntity<?> updateLivre(
             @Parameter(description = "Identifiant du livre à mettre à jour", example = "1") @PathVariable Long id,
             @Parameter(description = "Nouveaux détails du livre à mettre à jour", required = true) @Valid @RequestBody LivreDTO livreDTO) {
-        LivreDTO updatedLivreDTO = livreService.updateLivre(id, livreDTO);
-        return updatedLivreDTO != null ? ResponseEntity.ok(updatedLivreDTO) : ResponseEntity.notFound().build();
+        try {
+            LivreDTO updatedLivreDTO = livreService.updateLivre(id, livreDTO);
+            return ResponseEntity.ok(updatedLivreDTO);
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
     }
 
-    */
+
 }

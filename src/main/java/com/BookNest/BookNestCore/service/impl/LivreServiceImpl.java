@@ -75,9 +75,7 @@ public class LivreServiceImpl implements LivreService {
      }
      return livres.stream().map(LivreMapper.INSTANCE::livreToLivreDTO).collect(Collectors.toList());
  }
-}
 
-/*
 
     @Override
     public LivreDTO updateLivre(Long id, LivreDTO livreDTO) {
@@ -85,7 +83,6 @@ public class LivreServiceImpl implements LivreService {
         if (existingLivre != null) {
             existingLivre.setTitre(livreDTO.getTitre());
             existingLivre.setGenre(livreDTO.getGenre());
-            // Mise à jour des autres champs si nécessaire
 
             Livre updatedLivre = livreRepository.save(existingLivre);
             return LivreMapper.INSTANCE.livreToLivreDTO(updatedLivre);
@@ -93,6 +90,5 @@ public class LivreServiceImpl implements LivreService {
         return null;
     }
 
-    */
-
+}
 

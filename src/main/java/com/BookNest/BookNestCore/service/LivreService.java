@@ -14,8 +14,7 @@ public interface LivreService {
 
     List<LivreDTO> getAllLivres();
 
-/*
-    LivreDTO updateLivre(Long id, LivreDTO livreDTO);*/
+    LivreDTO updateLivre(Long id, LivreDTO livreDTO);
 
     String deleteLivre(Long id);
 }
