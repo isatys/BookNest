@@ -3,11 +3,14 @@ package com.BookNest.BookNestCore.dto;
 
 import com.BookNest.BookNestCore.model.Auteur;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 
 @Schema(description = "Détails sur le livre")
 public class LivreDTO {
 
     @Schema(hidden = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Schema(description = "Titre du livre", example = "Le Grand Gatsby")

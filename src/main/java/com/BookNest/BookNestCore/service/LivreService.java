@@ -8,10 +8,10 @@ public interface LivreService {
 
     LivreDTO getLivreById(Long id);
 
+    LivreDTO createLivre(LivreDTO livreDTO);
 
     /*List<LivreDTO> getAllLivres();
 
-    LivreDTO createLivre(LivreDTO livreDTO);
 
     LivreDTO updateLivre(Long id, LivreDTO livreDTO);
 

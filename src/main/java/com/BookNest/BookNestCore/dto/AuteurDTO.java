@@ -2,13 +2,19 @@ package com.BookNest.BookNestCore.dto;
 
 import com.BookNest.BookNestCore.model.Livre;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.OneToMany;
 
 import java.util.List;
 
 public class AuteurDTO {
 
     @Schema(hidden = true)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @Schema(description = "nom", example = "toto")
     private String nom;
     private String biographie;
     private List<LivreDTO> livres;

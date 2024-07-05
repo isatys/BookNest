@@ -13,7 +13,7 @@
         private Long id;
         private String nom;
         private String biographie;
-        @OneToMany(mappedBy = "auteur")
+        @OneToMany(mappedBy = "auteur", cascade = CascadeType.ALL)
         private List<Livre> livres;
         public Long getId() {
             return id;

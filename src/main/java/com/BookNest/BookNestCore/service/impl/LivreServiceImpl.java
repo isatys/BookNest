@@ -1,8 +1,11 @@
 package com.BookNest.BookNestCore.service.impl;
 
+import com.BookNest.BookNestCore.dto.AuteurDTO;
 import com.BookNest.BookNestCore.dto.LivreDTO;
 import com.BookNest.BookNestCore.mapper.LivreMapper;
+import com.BookNest.BookNestCore.model.Auteur;
 import com.BookNest.BookNestCore.model.Livre;
+import com.BookNest.BookNestCore.repository.AuteurRepository;
 import com.BookNest.BookNestCore.repository.LivreRepository;
 import com.BookNest.BookNestCore.service.LivreService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class LivreServiceImpl implements LivreService {
 
     private final LivreRepository livreRepository;
+    private final AuteurRepository auteurRepository;
 
     @Autowired
-    public LivreServiceImpl(LivreRepository livreRepository) {
+    public LivreServiceImpl(LivreRepository livreRepository, AuteurRepository auteurRepository) {
         this.livreRepository = livreRepository;
+        this.auteurRepository = auteurRepository;
     }
 
 
@@ -32,6 +37,24 @@ public class LivreServiceImpl implements LivreService {
         }
 
     }
+
+    @Override
+    @Transactional
+    public LivreDTO createLivre(LivreDTO livreDTO) {
+        Livre livre ;
+        // Récupérer l'auteur du DTO
+        Auteur auteur = auteurRepository.findByNom(livreDTO.getAuteur().getNom());
+        // Si l'auteur n'existe pas, le créer avec le nom seulement
+        if(livreDTO.getAuteur().getNom() != null){
+            livre = LivreMapper.INSTANCE.livreDTOToLivre(livreDTO);
+            livre.setAuteur(auteur);
+        }else{
+            return null;
+        }
+
+
+        return LivreMapper.INSTANCE.livreToLivreDTO(livreRepository.save(livre));
+    }
 /*
  @Override
     public List<LivreDTO> getAllLivres() {
@@ -41,12 +64,7 @@ public class LivreServiceImpl implements LivreService {
                 .collect(Collectors.toList());
     }
 
-    @Override
-    public LivreDTO createLivre(LivreDTO livreDTO) {
-        Livre livre = LivreMapper.INSTANCE.livreDTOToLivre(livreDTO);
-        Livre savedLivre = livreRepository.save(livre);
-        return LivreMapper.INSTANCE.livreToLivreDTO(savedLivre);
-    }
+
 
     @Override
     public LivreDTO updateLivre(Long id, LivreDTO livreDTO) {
