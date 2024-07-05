@@ -14,7 +14,7 @@ public class AuteurDTO {
     @Schema(hidden = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Schema(description = "nom", example = "toto")
+    @Schema(description = "nom", example = "J.K. Rowling")
     private String nom;
     private String biographie;
     private List<LivreDTO> livres;

@@ -8,6 +8,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -28,7 +30,7 @@ public class LivreController {
 
 
     @Operation(summary = "Récupérer un livre par ID", description = "Récupère un livre spécifique en fonction de son identifiant")
-    @ApiResponse(responseCode = "200", description = "Livre trouvé", content = @Content(schema = @Schema(implementation = LivreDTO.class)))
+    @ApiResponse(responseCode = "200", description = "Livre trouvé", content = @Content(mediaType = "application/json",schema = @Schema(implementation = LivreDTO.class)))
     @ApiResponse(responseCode = "404", description = "Livre non trouvé")
     @GetMapping("/{id}")
     public ResponseEntity<?> getLivreById(@Parameter(description = "Identifiant du livre à mettre à jour") @PathVariable Long id) {
@@ -42,7 +44,15 @@ public class LivreController {
         }
     }
 
-    public ResponseEntity<?> createLivre(
+    @PostMapping
+    @Operation(summary = "Créer un nouveau livre", description = "Ajoute un nouveau livre à la base de données avec les détails fournis.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "Livre créé avec succès",
+                    content = @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = LivreDTO.class))),
+            @ApiResponse(responseCode = "400", description = "Données de requête invalides",
+                    content = @Content)
+    })    public ResponseEntity<?> createLivre(
             @Parameter(description = "Détails du livre à créer", required = true) @Valid @RequestBody LivreDTO livreDTO) {
         LivreDTO createdLivreDTO = livreService.createLivre(livreDTO);
         if (createdLivreDTO.getAuteur() != null  && createdLivreDTO.getGenre()!= null || createdLivreDTO.getGenre().isEmpty() && createdLivreDTO.getTitre()!= null || createdLivreDTO.getTitre().isEmpty()) {
@@ -52,6 +62,19 @@ public class LivreController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Il manque des données pour l'Id: " + createdLivreDTO.getId());
         }
     }
+
+    @Operation(summary = "Supprimer un livre", description = "Supprime un livre existant en fonction de son identifiant")
+    @ApiResponse(responseCode = "204", description = "Livre supprimé avec succès")
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteLivre(
+            @Parameter(description = "Identifiant du livre à supprimer") @PathVariable Long id) {
+        try {
+            String message = livreService.deleteLivre(id);
+            return ResponseEntity.ok(message);
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }    }
+
     /*@Operation(summary = "Récupérer tous les livres", description = "Récupère la liste de tous les livres disponibles")
     @GetMapping
     public ResponseEntity<List<LivreDTO>> getAllLivres() {
@@ -77,12 +100,5 @@ public class LivreController {
         return updatedLivreDTO != null ? ResponseEntity.ok(updatedLivreDTO) : ResponseEntity.notFound().build();
     }
 
-    @Operation(summary = "Supprimer un livre", description = "Supprime un livre existant en fonction de son identifiant")
-    @ApiResponse(responseCode = "204", description = "Livre supprimé avec succès")
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLivre(
-            @Parameter(description = "Identifiant du livre à supprimer", example = "1") @PathVariable Long id) {
-        livreService.deleteLivre(id);
-        return ResponseEntity.noContent().build();
-    }*/
+    */
 }

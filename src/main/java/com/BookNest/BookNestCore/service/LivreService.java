@@ -13,7 +13,7 @@ public interface LivreService {
     /*List<LivreDTO> getAllLivres();
 
 
-    LivreDTO updateLivre(Long id, LivreDTO livreDTO);
+    LivreDTO updateLivre(Long id, LivreDTO livreDTO);*/
 
-    void deleteLivre(Long id);*/
+    String deleteLivre(Long id);
 }
