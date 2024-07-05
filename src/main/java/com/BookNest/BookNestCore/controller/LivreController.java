@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import java.util.List;
 
 
 @RestController
@@ -75,20 +76,21 @@ public class LivreController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
         }    }
 
-    /*@Operation(summary = "Récupérer tous les livres", description = "Récupère la liste de tous les livres disponibles")
+    @Operation(summary = "Récupérer tous les livres", description = "Récupère la liste de tous les livres disponibles")
     @GetMapping
-    public ResponseEntity<List<LivreDTO>> getAllLivres() {
-        List<LivreDTO> livres = livreService.getAllLivres();
-        return ResponseEntity.ok(livres);
+    public ResponseEntity<?> getAllLivres() {
+        try {
+            List<LivreDTO> livres = livreService.getAllLivres();
+            return ResponseEntity.ok(livres);
+        } catch (EntityNotFoundException ex) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+        }
+
     }
-    @Operation(summary = "Créer un nouveau livre", description = "Crée un nouveau livre à partir des détails fournis")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Livre créé avec succès"),
-            @ApiResponse(responseCode = "400", description = "Requête invalide"),
-            @ApiResponse(responseCode = "500", description = "Erreur interne du serveur")
-    })
 
 
+
+    /*
     @Operation(summary = "Mettre à jour un livre", description = "Met à jour les détails d'un livre existant en fonction de son identifiant")
     @ApiResponse(responseCode = "200", description = "Livre mis à jour avec succès", content = @Content(schema = @Schema(implementation = LivreDTO.class)))
     @ApiResponse(responseCode = "404", description = "Livre non trouvé")

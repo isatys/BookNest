@@ -12,6 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 public class LivreServiceImpl implements LivreService {
@@ -63,17 +66,18 @@ public class LivreServiceImpl implements LivreService {
         livreRepository.deleteById(id);
         return "Livre avec l'ID " + id + " a été supprimé avec succès.";
     }
-    }
-/*
+
  @Override
     public List<LivreDTO> getAllLivres() {
-        List<Livre> livres = livreRepository.findAll();
-        return livres.stream()
-                .map(LivreMapper.INSTANCE::livreToLivreDTO)
-                .collect(Collectors.toList());
-    }
+     List<Livre> livres = livreRepository.findAll();
+     if (livres.isEmpty()) {
+         throw new EntityNotFoundException("Aucun livre trouvé.");
+     }
+     return livres.stream().map(LivreMapper.INSTANCE::livreToLivreDTO).collect(Collectors.toList());
+ }
+}
 
-
+/*
 
     @Override
     public LivreDTO updateLivre(Long id, LivreDTO livreDTO) {
