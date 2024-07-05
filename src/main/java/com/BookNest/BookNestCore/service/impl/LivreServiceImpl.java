@@ -1,6 +1,5 @@
 package com.BookNest.BookNestCore.service.impl;
 
-import com.BookNest.BookNestCore.dto.AuteurDTO;
 import com.BookNest.BookNestCore.dto.LivreDTO;
 import com.BookNest.BookNestCore.mapper.LivreMapper;
 import com.BookNest.BookNestCore.model.Auteur;
@@ -8,6 +7,7 @@ import com.BookNest.BookNestCore.model.Livre;
 import com.BookNest.BookNestCore.repository.AuteurRepository;
 import com.BookNest.BookNestCore.repository.LivreRepository;
 import com.BookNest.BookNestCore.service.LivreService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,7 +37,7 @@ public class LivreServiceImpl implements LivreService {
         }
 
     }
-
+    //TODO gerer le cas ou les auteurs n'existe pas dans la base de donnees
     @Override
     @Transactional
     public LivreDTO createLivre(LivreDTO livreDTO) {
@@ -54,6 +54,15 @@ public class LivreServiceImpl implements LivreService {
 
 
         return LivreMapper.INSTANCE.livreToLivreDTO(livreRepository.save(livre));
+    }
+    @Override
+    public String deleteLivre(Long id) {
+        if (!livreRepository.existsById(id)) {
+            throw new EntityNotFoundException("Livre avec l'ID " + id + " non trouvé.");
+        }
+        livreRepository.deleteById(id);
+        return "Livre avec l'ID " + id + " a été supprimé avec succès.";
+    }
     }
 /*
  @Override
@@ -80,9 +89,6 @@ public class LivreServiceImpl implements LivreService {
         return null;
     }
 
-    @Override
-    public void deleteLivre(Long id) {
-        livreRepository.deleteById(id);
-    }*/
+    */
 
-}
+
