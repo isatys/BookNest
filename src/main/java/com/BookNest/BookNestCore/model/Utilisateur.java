@@ -7,6 +7,7 @@ import java.util.List;
  * Représente un utilisateur de la bibliothèque.
  */
 @Entity
+@Table(name = "utilisateur")
 public class Utilisateur {
 
     /** L'identifiant unique de l'utilisateur. */
@@ -87,4 +88,7 @@ public class Utilisateur {
     public void setEmprunts(List<Emprunt> emprunts) {
         this.emprunts = emprunts;
     }
+
+
+
 }
