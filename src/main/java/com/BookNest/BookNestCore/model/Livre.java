@@ -7,7 +7,7 @@ import jakarta.persistence.*;
  */
 @Entity
 @Table(name = "livres")
-public class Livre {
+public class    Livre {
 
     /** L'identifiant unique du livre. */
     @Id
