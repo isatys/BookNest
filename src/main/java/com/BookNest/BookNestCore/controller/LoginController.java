@@ -38,7 +38,7 @@ public class LoginController {
     public String login(@RequestParam String username, @RequestParam String password, Model model) {
         User user = userService.findByUsername(username);
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            return "redirect:/books";
+            return "redirect:/accueil";
         } else {
             model.addAttribute("error", "Nom d'utilisateur ou mot de passe incorrect");
             return "login";

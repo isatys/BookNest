@@ -23,7 +23,7 @@ public class WebSecurityConfig {
         http
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/books").permitAll()
+                        .requestMatchers("/accueil").permitAll()
                         .requestMatchers("/signup").permitAll()
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/webjars/**", "/swagger-resources/**", "/v3/api-docs/**","/resources/**").permitAll() // Autoriser l'accès aux ressources statiques
