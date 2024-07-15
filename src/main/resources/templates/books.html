@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Accueil - BookNest</title>
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+  <style>
+    body {
+      background-color: #f8f9fa;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: auto;
+    }
+    .page-header {
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+    .logout-btn {
+      margin-top: 10px;
+    }
+    .menu-item {
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="page-header">
+    <h1 class="text-center">Accueil - BookNest</h1>
+    <p class="lead text-center">Bienvenue sur BookNest, votre plateforme de gestion de livres.</p>
+  </div>
+
+  <!-- Barre de recherche -->
+  <div class="input-group mb-3">
+    <input type="text" class="form-control" placeholder="Rechercher des livres, des auteurs, des emprunts..." aria-label="Rechercher" aria-describedby="basic-addon2">
+    <div class="input-group-append">
+      <button class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i></button>
+    </div>
+  </div>
+
+  <!-- Menu de Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link menu-item" th:href="@{/}">Accueil</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link menu-item" th:href="@{/books}">Livres</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link menu-item" th:href="@{/authors}">Auteurs</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link menu-item" th:href="@{/loans}">Emprunts</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link menu-item" th:href="@{/profile}">Profil Utilisateur</a>
+      </li>
+    </ul>
+    <div class="my-2 my-lg-0">
+      <a th:href="@{/logout}" class="btn btn-danger logout-btn">Déconnexion</a>
+    </div>
+  </nav>
+
+  <!-- Contenu dynamique -->
+  <div class="text-center">
+    <!-- Section Livres -->
+    <h2>Liste des Livres</h2>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Titre</th>
+        <th>Auteur</th>
+        <th>Année de Publication</th>
+      </tr>
+      </thead>
+      <tbody>
+      <!-- Exemple de contenu dynamique avec Thymeleaf -->
+      <tr th:each="book : ${books}">
+        <td th:text="${book.title}">Titre du Livre</td>
+        <td th:text="${book.author}">Auteur du Livre</td>
+        <td th:text="${book.year}">Année de Publication</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

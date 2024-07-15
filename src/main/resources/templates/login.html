@@ -69,7 +69,7 @@
                 </div>
             </div>
         </div>
-        <p th:if="${param.error != null}" class="error-message">Nom d'utilisateur ou mot de passe incorrect</p>
+        <p th:if="${error}" class="error-message" th:text="${error}"></p>
         <button type="submit" class="btn btn-primary btn-block">Login</button>
     </form>
 </div>
