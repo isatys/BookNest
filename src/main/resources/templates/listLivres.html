@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8">
-  <title>Accueil - BookNest</title>
+  <title>Livres - BookNest</title>
   <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
   <style>
@@ -25,13 +25,18 @@
     .menu-item {
       margin-right: 10px;
     }
+    .book-details {
+      font-size: 0.9rem;
+    }
+    .book-actions {
+      white-space: nowrap;
+    }
   </style>
 </head>
 <body>
 <div class="container">
   <div class="page-header">
-    <h1 class="text-center">Accueil - BookNest</h1>
-    <p class="lead text-center">Bienvenue sur BookNest, votre plateforme de gestion de livres.</p>
+    <h1 class="text-center">Livres - BookNest</h1>
   </div>
 
   <!-- Barre de recherche -->
@@ -66,28 +71,44 @@
     </div>
   </nav>
 
+
   <!-- Contenu dynamique -->
   <div class="text-center">
     <!-- Section Livres -->
     <h2>Liste des Livres</h2>
-    <table class="table table-striped">
-      <thead>
-      <tr>
-        <th>Titre</th>
-        <th>Auteur</th>
-        <th>Année de Publication</th>
-      </tr>
-      </thead>
-      <tbody>
-      <!-- Exemple de contenu dynamique avec Thymeleaf -->
-      <tr th:each="book : ${books}">
-        <td th:text="${book.title}">Titre du Livre</td>
-        <td th:text="${book.author}">Auteur du Livre</td>
-        <td th:text="${book.year}">Année de Publication</td>
-      </tr>
-      </tbody>
-    </table>
+    <div th:if="${page}">
+      <div class="row">
+        <div class="col">
+          <div class="list-group">
+            <!-- Affichage dynamique des livres -->
+            <div th:each="livre : ${page}" class="list-group-item list-group-item-action">
+              <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1" th:text="${livre.titre}">Titre du Livre</h5>
+                <small class="text-muted" th:text="${livre.auteur.nom}">Auteur</small>
+              </div>
+              <p class="mb-1" th:text="${livre.genre}">Genre</p>
+              <div class="book-actions">
+                <a th:href="@{/editBook/{id}(id=${livre.id})}" class="btn btn-primary btn-sm">Modifier</a>
+                <a th:href="@{/deleteBook/{id}(id=${livre.id})}" class="btn btn-danger btn-sm">Supprimer</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div th:unless="${page}">
+      <p>Aucun livre trouvé.</p>
+    </div>
   </div>
+
+
+  <!-- Bouton Ajouter un Livre (réservé aux administrateurs) -->
+  <div th:if="${isAdmin}">
+    <div class="text-center mt-3">
+      <a th:href="@{/addBook}" class="btn btn-success">Ajouter un Livre</a>
+    </div>
+  </div>
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
