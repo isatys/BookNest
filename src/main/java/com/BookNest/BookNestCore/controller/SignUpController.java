@@ -3,6 +3,7 @@ package com.BookNest.BookNestCore.controller;
 import com.BookNest.BookNestCore.model.User;
 import com.BookNest.BookNestCore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class SignUpController {
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     /**
      * Affiche le formulaire d'inscription.
@@ -33,19 +37,20 @@ public class SignUpController {
      * @return une redirection vers la page de connexion après une inscription réussie.
      */
     @PostMapping("/signup")
-    public String signUp(@RequestParam String username, @RequestParam String password, @RequestParam String address, Model model) {
+    public String signUp(@RequestParam String username, @RequestParam String password, Model model) {
         // Vérifier si l'utilisateur existe déjà
         User existingUser = userService.findByUsername(username);
-       if (existingUser != null) {
+        if (existingUser != null) {
             model.addAttribute("error", "Username already exists. Please choose a different username.");
             return "signup";
         }
 
+        // Créer un nouvel utilisateur
+        User newUser = new User();
+        newUser.setUsername(username);
+        newUser.setPassword(passwordEncoder.encode(password)); // Encodage du mot de passe
+        userService.saveUser(newUser); // Enregistrer l'utilisateur
 
-        User utilisateur = new User();
-        utilisateur.setUsername(username);
-        utilisateur.setPassword(password);
-        userService.saveUser(utilisateur);
-        return "redirect:/login";
+        return "redirect:/login"; // Rediriger vers la page de connexion après inscription réussie
     }
 }
