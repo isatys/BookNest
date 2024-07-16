@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Créer un Administrateur</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <!-- Inclure d'autres fichiers CSS si nécessaire -->
+    <style>
+        body {
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: auto;
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="mb-3">Créer un nouvel administrateur</h2>
+    <form action="/admin/create" method="post">
+        <div class="form-group">
+            <label for="username">Nom d'utilisateur :</label>
+            <input type="text" class="form-control" id="username" name="username" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Mot de passe :</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Créer</button>
+    </form>
+    <br>
+    <!-- Afficher un message de succès si nécessaire -->
+    <p class="text-success" th:if="${param.success}">Administrateur créé avec succès !</p>
+</div>
+</body>
+</html>

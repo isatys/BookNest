@@ -51,19 +51,19 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link menu-item" th:href="@{/}">Accueil</a>
+        <a class="nav-link menu-item" th:href="@{/pages/}">Accueil</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link menu-item" th:href="@{/livres}">Livres</a>
+        <a class="nav-link menu-item" th:href="@{/pages/livres}">Livres</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link menu-item" th:href="@{/authors}">Auteurs</a>
+        <a class="nav-link menu-item" th:href="@{/pages/authors}">Auteurs</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link menu-item" th:href="@{/loans}">Emprunts</a>
+        <a class="nav-link menu-item" th:href="@{/pages/loans}">Emprunts</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link menu-item" th:href="@{/profile}">Profil Utilisateur</a>
+        <a class="nav-link menu-item" th:href="@{/pages/profile}">Profil Utilisateur</a>
       </li>
     </ul>
     <div class="my-2 my-lg-0">
@@ -71,17 +71,16 @@
     </div>
   </nav>
 
-
   <!-- Contenu dynamique -->
   <div class="text-center">
     <!-- Section Livres -->
     <h2>Liste des Livres</h2>
-    <div th:if="${page}">
+    <div th:if="${livres}">
       <div class="row">
         <div class="col">
           <div class="list-group">
             <!-- Affichage dynamique des livres -->
-            <div th:each="livre : ${page}" class="list-group-item list-group-item-action">
+            <div th:each="livre : ${livres}" class="list-group-item list-group-item-action">
               <div class="d-flex w-100 justify-content-between">
                 <h5 class="mb-1" th:text="${livre.titre}">Titre du Livre</h5>
                 <small class="text-muted" th:text="${livre.auteur.nom}">Auteur</small>
@@ -101,7 +100,7 @@
     </div>
   </div>
 
-
+  <p th:text="${isAdmin} ? 'Admin' : 'Non Admin'"></p>
   <!-- Bouton Ajouter un Livre (réservé aux administrateurs) -->
   <div th:if="${isAdmin}">
     <div class="text-center mt-3">
