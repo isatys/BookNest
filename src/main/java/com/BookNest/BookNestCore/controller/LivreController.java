@@ -58,5 +58,18 @@ public class LivreController {
         return "redirect:/pages/livres";
     }
 
+
+    @GetMapping("/editBook/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        LivreDTO livreDTO = livreService.getLivreById(id);
+        model.addAttribute("livre", livreDTO);
+        return "editBook"; // This should match the name of your Thymeleaf template (editBook.html)
+    }
+
+    @PostMapping("/updateBook/{id}")
+    public String updateBook(@PathVariable Long id, @ModelAttribute LivreDTO livreDTO) {
+        livreService.updateLivre(id, livreDTO);
+        return "redirect:/pages/livres"; // Redirect to the book list page after updating
+    }
 }
 

@@ -88,7 +88,7 @@
               </div>
               <p class="mb-1" th:text="${livre.genre}">Genre</p>
               <div class="book-actions">
-                <a th:href="@{/editBook/{id}(id=${livre.id})}" class="btn btn-primary btn-sm">Modifier</a>
+                <a th:href="@{/pages/editBook/{id}(id=${livre.id})}" class="btn btn-primary btn-sm">Modifier</a>
                 <a th:href="@{/pages/deleteBook/{id}(id=${livre.id})}" class="btn btn-danger btn-sm" onclick="confirmDelete(event)">Supprimer</a>
               </div>
             </div>
