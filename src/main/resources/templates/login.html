@@ -72,6 +72,8 @@
         <p th:if="${error}" class="error-message" th:text="${error}"></p>
         <button type="submit" class="btn btn-primary btn-block">Login</button>
     </form>
+    <p class="text-center mt-3">Pas enregistré? <a th:href="@{/signup}">Creer un compte</a></p> <!-- Lien vers la page d'inscription -->
+
 </div>
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
