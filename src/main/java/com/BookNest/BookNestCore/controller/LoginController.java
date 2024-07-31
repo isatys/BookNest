@@ -27,23 +27,8 @@ public class LoginController {
      * @return le nom du template Thymeleaf pour la page de connexion.
      */
     @GetMapping("/login")
-    public String showLoginForm(@RequestParam(value = "error", required = false) String error, Model model) {
-        if (error != null) {
-            model.addAttribute("error", "Nom d'utilisateur ou mot de passe incorrect");
-        }
-        return "login";
-    }
-
-    @PostMapping("/login")
-    public String login(@RequestParam String username, @RequestParam String password, Model model) {
-        User user = userService.findByUsername(username);
-        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
-            return "redirect:/accueil";
-        } else {
-            model.addAttribute("error", "Nom d'utilisateur ou mot de passe incorrect");
-            return "login";
-        }
-
+    public String loginPage() {
+        return "login"; // Assurez-vous que "login" correspond au nom de votre template Thymeleaf ou JSP
     }
 
 }

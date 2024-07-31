@@ -56,17 +56,19 @@ public class LivreServiceImpl implements LivreService {
     @Transactional
     public LivreDTO createLivre(LivreDTO livreDTO) {
         Livre livre;
-        // Récupérer l'auteur du DTO
-        Auteur auteur = auteurRepository.findByNom(livreDTO.getAuteur().getNom());
+        LivreDTO livreDto;
         // Si l'auteur n'existe pas, le créer avec le nom seulement
-        if (livreDTO.getAuteur().getNom() != null) {
+        if (livreDTO.getAuteur() != null || livreDTO.getAuteur().getNom() != null) {
+            // Récupérer l'auteur du DTO
+            Auteur auteur = auteurRepository.findByNom(livreDTO.getAuteur().getNom());
             livre = LivreMapper.INSTANCE.livreDTOToLivre(livreDTO);
             livre.setAuteur(auteur);
+            livreDto = LivreMapper.INSTANCE.livreToLivreDTO(livreRepository.save(livre));
         } else {
             return null;
         }
 
-        return LivreMapper.INSTANCE.livreToLivreDTO(livreRepository.save(livre));
+        return livreDto;
     }
 
     /**

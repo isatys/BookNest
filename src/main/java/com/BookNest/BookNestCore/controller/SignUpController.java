@@ -1,6 +1,8 @@
 package com.BookNest.BookNestCore.controller;
 
+import com.BookNest.BookNestCore.model.Role;
 import com.BookNest.BookNestCore.model.User;
+import com.BookNest.BookNestCore.repository.RoleRepository;
 import com.BookNest.BookNestCore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +17,8 @@ public class SignUpController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private RoleRepository roleRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -49,6 +53,11 @@ public class SignUpController {
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(password)); // Encodage du mot de passe
+        // Ajouter le rôle USER par défaut
+        Role userRole = roleRepository.findByName("ROLE_USER")
+                .orElseThrow(() -> new RuntimeException("User role not found"));
+        newUser.getRoles().add(userRole);
+
         userService.saveUser(newUser); // Enregistrer l'utilisateur
 
         return "redirect:/login"; // Rediriger vers la page de connexion après inscription réussie

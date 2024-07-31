@@ -28,6 +28,11 @@
   </style>
 </head>
 <body>
+<!-- Contenus spécifiques pour les administrateurs -->
+<div th:if="${isAdmin}">
+  <p>Vous êtes connecté en tant qu'administrateur.</p>
+  <!-- Ajoutez ici d'autres contenus réservés aux administrateurs -->
+</div>
 <div class="container">
   <div class="page-header">
     <h1 class="text-center">Accueil - BookNest</h1>
@@ -46,19 +51,19 @@
   <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item">
-        <a class="nav-link menu-item" th:href="@{/}">Accueil</a>
+        <a class="nav-link menu-item" th:href="@{/pages/}">Accueil</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link menu-item" th:href="@{/books}">Livres</a>
+        <a class="nav-link menu-item" th:href="@{/pages/livres}">Livres</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link menu-item" th:href="@{/authors}">Auteurs</a>
+        <a class="nav-link menu-item" th:href="@{/pages/authors}">Auteurs</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link menu-item" th:href="@{/loans}">Emprunts</a>
+        <a class="nav-link menu-item" th:href="@{/pages/loans}">Emprunts</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link menu-item" th:href="@{/profile}">Profil Utilisateur</a>
+        <a class="nav-link menu-item" th:href="@{/pages/profile}">Profil Utilisateur</a>
       </li>
     </ul>
     <div class="my-2 my-lg-0">
