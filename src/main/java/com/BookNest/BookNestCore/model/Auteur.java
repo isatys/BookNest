@@ -1,5 +1,6 @@
 package com.BookNest.BookNestCore.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.mapstruct.Named;
 
@@ -9,6 +10,7 @@ import java.util.List;
  * Représente un auteur d'un livre.
  */
 @Entity
+@Table(name = "auteur")
 public class Auteur {
 
     @Id
@@ -16,6 +18,7 @@ public class Auteur {
     private Long id;
 
     /** Le nom de l'auteur. */
+    @Column(nullable = false)
     private String nom;
 
     /** La biographie de l'auteur. */
@@ -23,6 +26,7 @@ public class Auteur {
 
     /** Liste des livres écrits par cet auteur. */
     @OneToMany(mappedBy = "auteur", cascade = CascadeType.ALL)
+    @JsonIgnore // Prevents recursion during JSON serialization
     private List<Livre> livres;
 
     /**
