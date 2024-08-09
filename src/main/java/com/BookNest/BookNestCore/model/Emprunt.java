@@ -1,6 +1,8 @@
 package com.BookNest.BookNestCore.model;
 
 import jakarta.persistence.*;
+
+import java.time.LocalDate;
 import java.util.Date;
 
 /**
@@ -11,13 +13,14 @@ public class Emprunt {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @SequenceGenerator(name = "emprunt_seq", sequenceName = "emprunt_id_seq", allocationSize = 1)
     private Long id;
 
     /** La date à laquelle l'emprunt a été effectué. */
-    private Date dateEmprunt;
+    private LocalDate dateEmprunt;
 
     /** La date à laquelle le livre doit être retourné. */
-    private Date dateRetour;
+    private LocalDate dateRetour;
 
     /** Le livre emprunté. */
     @ManyToOne
@@ -47,7 +50,7 @@ public class Emprunt {
      * Obtient la date d'emprunt du livre.
      * @return la date d'emprunt du livre
      */
-    public Date getDateEmprunt() {
+    public LocalDate getDateEmprunt() {
         return dateEmprunt;
     }
 
@@ -55,7 +58,7 @@ public class Emprunt {
      * Définit la date d'emprunt du livre.
      * @param dateEmprunt la date d'emprunt du livre à définir
      */
-    public void setDateEmprunt(Date dateEmprunt) {
+    public void setDateEmprunt(LocalDate dateEmprunt) {
         this.dateEmprunt = dateEmprunt;
     }
 
@@ -63,7 +66,7 @@ public class Emprunt {
      * Obtient la date de retour prévue du livre.
      * @return la date de retour prévue du livre
      */
-    public Date getDateRetour() {
+    public LocalDate getDateRetour() {
         return dateRetour;
     }
 
@@ -71,7 +74,7 @@ public class Emprunt {
      * Définit la date de retour prévue du livre.
      * @param dateRetour la date de retour prévue du livre à définir
      */
-    public void setDateRetour(Date dateRetour) {
+    public void setDateRetour(LocalDate dateRetour) {
         this.dateRetour = dateRetour;
     }
 

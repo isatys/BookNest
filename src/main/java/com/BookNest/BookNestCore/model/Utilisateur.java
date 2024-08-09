@@ -89,6 +89,13 @@ public class Utilisateur {
         this.emprunts = emprunts;
     }
 
+    // Constructeur sans arguments
+    public Utilisateur() {
+    }
 
+    // Constructeur avec un argument
+    public Utilisateur(Long id) {
+        this.id = id;
+    }
 
 }

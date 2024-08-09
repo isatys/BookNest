@@ -15,29 +15,11 @@ import java.util.List;
 public interface AuteurMapper {
     AuteurMapper INSTANCE = Mappers.getMapper(AuteurMapper.class);
 
-    @Mappings({
-            @Mapping(target = "livres", ignore = true) // Prevent recursive mapping
-    })
+
     AuteurDTO auteurToAuteurDTO(Auteur auteur);
 
-    @Mappings({
-            @Mapping(target = "livres", ignore = true) // Prevent recursive mapping
-    })
+
     Auteur auteurDTOToAuteur(AuteurDTO auteurDTO);
 
-    List<AuteurDTO> auteursToAuteurDTOs(List<Auteur> auteurs);
 
-    List<Auteur> auteurDTOsToAuteurs(List<AuteurDTO> auteurDTOs);
-
-    @Mappings({
-            @Mapping(target = "auteur", ignore = true) // Prevent recursive mapping
-    })
-    LivreDTO livreToLivreDTO(Livre livre);
-
-    List<LivreDTO> livreListToLivreDTOList(List<Livre> livres);
-
-    @Mappings({
-            @Mapping(target = "auteur", ignore = true) // Prevent recursive mapping
-    })
-    Livre livreDTOToLivre(LivreDTO livreDTO);
 }

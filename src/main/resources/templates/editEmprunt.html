@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Emprunts - BookNest</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+        }
+        .page-header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .logout-btn {
+            margin-top: 10px;
+        }
+        .menu-item {
+            margin-right: 10px;
+        }
+        .book-actions {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="page-header">
+        <h1 class="text-center">Emprunts - BookNest</h1>
+    </div>
+
+    <!-- Barre de recherche -->
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Rechercher des emprunts..." aria-label="Rechercher"
+               aria-describedby="basic-addon2">
+        <div class="input-group-append">
+            <button class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+
+    <!-- Menu de Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+                <a class="nav-link menu-item" th:href="@{/pages/accueil}">Accueil</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link menu-item" th:href="@{/pages/livres}">Livres</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link menu-item" th:href="@{/pages/auteurs}">Auteurs</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link menu-item" th:href="@{/pages/emprunts}">Emprunts</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link menu-item" th:href="@{/pages/profile}">Profil Utilisateur</a>
+            </li>
+        </ul>
+        <div class="my-2 my-lg-0">
+            <a th:href="@{/logout}" class="btn btn-danger logout-btn">Déconnexion</a>
+        </div>
+    </nav>
+
+    <!-- Liste des Emprunts -->
+    <div class="text-center">
+        <h2>Liste des Emprunts</h2>
+        <div th:if="${emprunts}">
+            <div class="row">
+                <div class="col">
+                    <div class="list-group">
+                        <div th:each="emprunt : ${emprunts}" class="list-group-item list-group-item-action">
+                            <p class="mb-1" th:text="'Livre emprunté: ' + ${emprunt.livre.titre}">Titre du Livre</p>
+                            <p class="mb-1" th:text="'Date d\'emprunt: ' + ${emprunt.dateEmprunt}">Date d'emprunt</p>
+                            <p class="mb-1" th:text="'Date de retour: ' + ${emprunt.dateRetour}">Date de retour</p>
+                            <div class="book-actions">
+                                <a th:href="@{/pages/deleteEmprunt/{id}(id=${emprunt.id})}"
+                                   class="btn btn-danger btn-sm" onclick="confirmDelete(event)">Supprimer</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section d'Édition ou de Création d'Emprunt -->
+    <div class="container">
+        <div class="page-header">
+            <!-- Modification ici -->
+            <h1 class="text-center" th:text="${emprunt != null && emprunt.id != null ? 'Modifier Emprunt' : 'Ajouter un Emprunt'}">
+                Éditer Emprunt
+            </h1>
+        </div>
+
+        <!-- Formulaire d'édition/création d'emprunt -->
+        <form th:action="@{${emprunt != null && emprunt.id != null ? '/pages/updateEmprunt/' + emprunt.id : '/pages/createEmprunt'}}"
+              th:object="${emprunt}" method="post" class="mt-3" onsubmit="return validateDates()">
+            <!-- Affichage des messages d'erreur généraux (gérés par le contrôleur) -->
+            <div th:if="${#fields.hasErrors()}" class="alert alert-danger">
+                <ul>
+                    <li th:each="err : ${#fields.errors()}" th:text="${err}"></li>
+                </ul>
+            </div>
+
+            <div class="form-group">
+                <label for="dateEmprunt">Date d'Emprunt</label>
+                <input type="date" class="form-control" id="dateEmprunt" th:field="*{dateEmprunt}" required>
+            </div>
+            <div class="form-group">
+                <label for="dateRetour">Date de Retour</label>
+                <input type="date" class="form-control" id="dateRetour" th:field="*{dateRetour}" required>
+            </div>
+            <div class="form-group">
+                <label for="livre">Livre</label>
+                <select id="livre" th:field="*{livre.id}" class="form-control">
+                    <option th:each="livre : ${livres}" th:value="${livre.id}" th:text="${livre.titre}"></option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-success">Ajouter</button>
+        </form>
+    </div>
+
+    <script>
+        function validateDates() {
+            const dateEmprunt = document.getElementById('dateEmprunt').value;
+            const dateRetour = document.getElementById('dateRetour').value;
+            if (dateRetour && dateEmprunt > dateRetour) {
+                alert("La date de retour ne peut pas être antérieure à la date d'emprunt.");
+                return false;
+            }
+            return true;
+        }
+
+        function confirmDelete(event) {
+            if (!confirm("Êtes-vous sûr de vouloir supprimer cet emprunt ?")) {
+                event.preventDefault();
+            }
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</div>
+</body>
+</html>
