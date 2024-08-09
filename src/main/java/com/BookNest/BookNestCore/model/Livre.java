@@ -1,5 +1,6 @@
 package com.BookNest.BookNestCore.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 
 /**
@@ -7,7 +8,7 @@ import jakarta.persistence.*;
  */
 @Entity
 @Table(name = "livres")
-public class    Livre {
+public class Livre {
 
     /** L'identifiant unique du livre. */
     @Id
@@ -22,6 +23,7 @@ public class    Livre {
 
     /** L'auteur qui a écrit le livre. */
     @ManyToOne
+    @JsonBackReference // Gère la sérialisation de l'auteur
     private Auteur auteur;
 
     /**
@@ -33,15 +35,9 @@ public class    Livre {
     /**
      * Constructeur avec paramètres de la classe Livre.
      * @param id l'identifiant du livre
-     * @param titre le titre du livre
-     * @param genre le genre littéraire du livre
-     * @param auteur l'auteur du livre
      */
-    public Livre(Long id, String titre, String genre, Auteur auteur) {
+    public Livre(Long id) {
         this.id = id;
-        this.titre = titre;
-        this.genre = genre;
-        this.auteur = auteur;
     }
 
     /**

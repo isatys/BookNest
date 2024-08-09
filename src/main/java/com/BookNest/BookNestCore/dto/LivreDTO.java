@@ -19,10 +19,17 @@ public class LivreDTO {
     @Schema(description = "Genre du livre", example = "Fiction")
     private String genre;
 
-    @Schema(description = "Détails sur l'auteur du livre")
-    private AuteurDTO auteur;
+    @Schema(description = "Id du livre")
+    private Long auteurId;
+
+    public LivreDTO() {}
 
     // Getters and setters
+
+    public LivreDTO(Long id, String titre) {
+        this.id = id;
+        this.titre = titre;
+    }
 
     public Long getId() {
         return id;
@@ -48,13 +55,12 @@ public class LivreDTO {
         this.genre = genre;
     }
 
-    public AuteurDTO getAuteur() {
-        return auteur;
+    public Long getAuteurId() {
+        return auteurId;
     }
 
-    public void setAuteur(AuteurDTO auteur) {
-        this.auteur = auteur;
+    public void setAuteurId(Long auteurId) {
+        this.auteurId = auteurId;
     }
-
 }
 

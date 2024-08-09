@@ -1,6 +1,7 @@
 package com.BookNest.BookNestCore.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import org.mapstruct.Named;
 
@@ -26,7 +27,7 @@ public class Auteur {
 
     /** Liste des livres écrits par cet auteur. */
     @OneToMany(mappedBy = "auteur", cascade = CascadeType.ALL)
-    @JsonIgnore // Prevents recursion during JSON serialization
+    @JsonManagedReference // Gère la sérialisation de la liste des livres
     private List<Livre> livres;
 
     /**
