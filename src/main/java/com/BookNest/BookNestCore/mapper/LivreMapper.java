@@ -23,7 +23,7 @@ public interface LivreMapper {
      * @param livre l'objet Livre à convertir
      * @return le LivreDTO correspondant
      */
-    @Mapping(target = "auteur.livres", expression = "java(null)")
+    @Mapping(target = "nomAuteur", source = "auteurNom")
     LivreDTO livreToLivreDTO(Livre livre);
 
     /**
@@ -32,6 +32,6 @@ public interface LivreMapper {
      * @param livreDTO l'objet LivreDTO à convertir
      * @return le Livre correspondant
      */
-    @Mapping(target = "auteur.livres", expression = "java(null)")
+    @Mapping(target = "auteurNom", source = "nomAuteur")
     Livre livreDTOToLivre(LivreDTO livreDTO);
 }

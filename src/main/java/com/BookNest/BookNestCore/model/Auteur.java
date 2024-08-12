@@ -26,8 +26,8 @@ public class Auteur {
     private String biographie;
 
     /** Liste des livres écrits par cet auteur. */
-    @OneToMany(mappedBy = "auteur", cascade = CascadeType.ALL)
-    @JsonManagedReference // Gère la sérialisation de la liste des livres
+    @OneToMany(mappedBy = "auteur", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<Livre> livres;
 
     /**

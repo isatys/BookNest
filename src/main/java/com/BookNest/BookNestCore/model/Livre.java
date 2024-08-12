@@ -16,16 +16,21 @@ public class Livre {
     private Long id;
 
     /** Le titre du livre. */
+    @Column(name = "titre")
     private String titre;
 
     /** Le genre littéraire du livre. */
+    @Column(name = "genre")
     private String genre;
+
+    @Column(name = "auteur_nom")
+    private String auteurNom;
 
     /** L'auteur qui a écrit le livre. */
     @ManyToOne
-    @JsonBackReference // Gère la sérialisation de l'auteur
+    @JoinColumn(name = "auteur_id") // Assure que la colonne auteur_id existe dans la table livres
+    @JsonBackReference
     private Auteur auteur;
-
     /**
      * Constructeur par défaut de la classe Livre.
      */
@@ -88,19 +93,12 @@ public class Livre {
         this.genre = genre;
     }
 
-    /**
-     * Obtient l'auteur du livre.
-     * @return l'auteur du livre
-     */
-    public Auteur getAuteur() {
-        return auteur;
+
+    public String getAuteurNom() {
+        return auteurNom;
     }
 
-    /**
-     * Définit l'auteur du livre.
-     * @param auteur l'auteur du livre à définir
-     */
-    public void setAuteur(Auteur auteur) {
-        this.auteur = auteur;
+    public void setAuteurNom(String auteurNom) {
+        this.auteurNom = auteurNom;
     }
 }

@@ -19,8 +19,8 @@ public class LivreDTO {
     @Schema(description = "Genre du livre", example = "Fiction")
     private String genre;
 
-    @Schema(description = "Id du livre")
-    private Long auteurId;
+    @Schema(description = "Nom de l'auteur", example = "F. Scott Fitzgerald")
+    private String nomAuteur;
 
     public LivreDTO() {}
 
@@ -55,12 +55,12 @@ public class LivreDTO {
         this.genre = genre;
     }
 
-    public Long getAuteurId() {
-        return auteurId;
+    public String getNomAuteur() {
+        return nomAuteur;
     }
 
-    public void setAuteurId(Long auteurId) {
-        this.auteurId = auteurId;
+    public void setNomAuteur(String nomAuteur) {
+        this.nomAuteur = nomAuteur;
     }
 }
 

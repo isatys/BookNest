@@ -59,13 +59,12 @@ public class LivreServiceImpl implements LivreService {
         LivreDTO livreDto;
 
         // Vérifier si l'auteur est spécifié par son ID
-        if (livreDTO.getAuteurId() != null) {
-            // Récupérer l'auteur du repository en utilisant l'ID
-            Auteur auteur = auteurRepository.findById(livreDTO.getAuteurId())
-                    .orElseThrow(() -> new RuntimeException("Auteur non trouvé"));
+        if (livreDTO.getNomAuteur() != null) {
+            // Récupérer l'auteur du repository en utilisant le nom
+            Auteur auteur = auteurRepository.findByNom(livreDTO.getNomAuteur());
             // Mapper le DTO en entité
             livre = LivreMapper.INSTANCE.livreDTOToLivre(livreDTO);
-            livre.setAuteur(auteur);
+            livre.setAuteurNom(auteur.getNom());
             // Sauvegarder le livre et mapper en DTO
             livreDto = LivreMapper.INSTANCE.livreToLivreDTO(livreRepository.save(livre));
         } else {

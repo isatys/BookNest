@@ -17,7 +17,6 @@ public class AuteurDTO {
     @Schema(description = "nom", example = "J.K. Rowling")
     private String nom;
     private String biographie;
-    private Long livresID;
 
     // Getters and setters
 
@@ -43,15 +42,6 @@ public class AuteurDTO {
 
     public void setBiographie(String biographie) {
         this.biographie = biographie;
-    }
-
-
-    public Long getLivresID() {
-        return livresID;
-    }
-
-    public void setLivresID(Long livresID) {
-        this.livresID = livresID;
     }
 }
 
