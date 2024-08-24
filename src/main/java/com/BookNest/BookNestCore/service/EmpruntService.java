@@ -15,7 +15,6 @@ public interface EmpruntService {
 
     List<Livre> getAvailableBooks();
 
-    List<EmpruntDTO> getAllEmpruntsForAdmin();
 
     List<EmpruntDTO> getEmpruntsByUtilisateur(Long utilisateurId);
 

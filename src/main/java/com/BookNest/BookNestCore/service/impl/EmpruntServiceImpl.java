@@ -81,13 +81,6 @@ public class EmpruntServiceImpl implements EmpruntService {
                 .collect(Collectors.toList());
     }
 
-    public List<EmpruntDTO> getAllEmpruntsForAdmin() {
-        List<Emprunt> emprunts = empruntRepository.findAll();
-        return emprunts.stream()
-                .map(empruntMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
     public Emprunt findById(Long id) {
         return empruntRepository.findById(id).orElse(null);
     }
