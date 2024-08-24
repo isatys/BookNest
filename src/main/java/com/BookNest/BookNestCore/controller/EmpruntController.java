@@ -52,6 +52,9 @@ public class EmpruntController {
         }
         // Récupérer Utilisateur à partir de User
         UtilisateurDTO utilisateur = utilisateurService.getUtilisateurByNom(user.getUsername());
+        if (utilisateur == null) {
+            return "userEmprunts"; // Assurez-vous d'avoir une vue appropriée pour les emprunts de l'utilisateur
+        }
         Long utilisateurId = utilisateur.getId();
         boolean isAdmin = auth.getAuthorities().stream()
                 .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
@@ -66,11 +69,7 @@ public class EmpruntController {
             emprunts = empruntService.getEmpruntsByUtilisateur(utilisateurId);
         }
 
-        if (emprunts.isEmpty()) {
-            model.addAttribute("infoMessage", "Aucun emprunt trouvé.");
-        } else {
-            model.addAttribute("emprunts", emprunts);
-        }
+        model.addAttribute("emprunts", emprunts);
 
         model.addAttribute("isAdmin", isAdmin);
 
