@@ -16,10 +16,8 @@ public class Utilisateur {
     private Long id;
 
     /** Le nom de l'utilisateur. */
+    @Column(nullable = false)
     private String nom;
-
-    /** L'adresse de l'utilisateur. */
-    private String adresse;
 
     /** La liste des emprunts effectués par l'utilisateur. */
     @OneToMany(mappedBy = "utilisateur", cascade = CascadeType.ALL)
@@ -55,22 +53,6 @@ public class Utilisateur {
      */
     public void setNom(String nom) {
         this.nom = nom;
-    }
-
-    /**
-     * Obtient l'adresse de l'utilisateur.
-     * @return l'adresse de l'utilisateur
-     */
-    public String getAdresse() {
-        return adresse;
-    }
-
-    /**
-     * Définit l'adresse de l'utilisateur.
-     * @param adresse l'adresse de l'utilisateur à définir
-     */
-    public void setAdresse(String adresse) {
-        this.adresse = adresse;
     }
 
     /**

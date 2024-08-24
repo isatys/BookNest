@@ -25,6 +25,7 @@ public class LivreController {
     public String getAllLivres(Model model) {
         List<LivreDTO> livres = livreService.getAllLivres();
         model.addAttribute("livres", livres);
+
         // Vérifier si l'utilisateur a le rôle d'administrateur
         boolean isAdmin = false;
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -34,33 +35,44 @@ public class LivreController {
                 UserDetails userDetails = (UserDetails) principal;
                 isAdmin = userDetails.getAuthorities().stream()
                         .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
-                // Debug
-                System.out.println("isAdmin: " + isAdmin);
             }
         }
-        // Ajouter un nouvel objet LivreDTO pour le formulaire d'ajout
+        model.addAttribute("isAdmin", isAdmin);
         model.addAttribute("newLivre", new LivreDTO());
 
-        model.addAttribute("isAdmin", isAdmin);
         return "listLivres"; // Retourne le nom de la vue Thymeleaf
     }
 
     @PostMapping("/createLivre")
     public String createLivre(
             @Parameter(description = "Détails du livre à créer", required = true) @Valid @ModelAttribute LivreDTO livreDTO) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
+            return "redirect:/pages/livres"; // Redirige vers la liste des livres si non-admin
+        }
         livreService.createLivre(livreDTO);
         return "redirect:/pages/livres"; // Rediriger vers la liste des livres après l'ajout
     }
 
     @GetMapping("/deleteBook/{id}")
     public String deleteBook(@PathVariable Long id, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
+            return "redirect:/pages/livres"; // Redirige vers la liste des livres si non-admin
+        }
         livreService.deleteLivre(id);
         return "redirect:/pages/livres";
     }
 
-
     @GetMapping("/editBook/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
+            return "redirect:/pages/livres"; // Redirige vers la liste des livres si non-admin
+        }
         LivreDTO livreDTO = livreService.getLivreById(id);
         model.addAttribute("livre", livreDTO);
         return "editBook"; // This should match the name of your Thymeleaf template (editBook.html)
@@ -68,8 +80,12 @@ public class LivreController {
 
     @PostMapping("/updateBook/{id}")
     public String updateBook(@PathVariable Long id, @ModelAttribute LivreDTO livreDTO) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
+            return "redirect:/pages/livres"; // Redirige vers la liste des livres si non-admin
+        }
         livreService.updateLivre(id, livreDTO);
         return "redirect:/pages/livres"; // Redirect to the book list page after updating
     }
 }
-

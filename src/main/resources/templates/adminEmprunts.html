@@ -92,7 +92,7 @@
                             <p class="mb-1">Utilisateur: <span th:text="${emprunt != null && emprunt.utilisateur != null ? emprunt.utilisateur.nom : 'Nom non disponible'}">Nom de l'utilisateur</span></p>
                             <p class="mb-1">Date de Retour: <span th:text="${emprunt != null ? (emprunt.dateRetour != null ? emprunt.dateRetour : 'Date non disponible') : 'Date non disponible'}">Date de retour</span></p>
 
-                            <div class="book-actions" th:if="${isAdmin}">
+                            <div class="book-actions">
                                 <a th:href="@{/pages/editEmprunt(id=${emprunt?.id})}" class="btn btn-warning btn-sm">Modifier</a>
                                 <a th:href="@{/pages/deleteEmprunt/{id}(id=${emprunt?.id})}" class="btn btn-danger btn-sm" onclick="confirmDelete(event)">Supprimer</a>
                             </div>
@@ -107,7 +107,7 @@
     </div>
 
     <!-- Section d'Édition ou de Création d'Emprunt -->
-    <div class="container">
+    <div class="container mt-5">
         <div class="page-header">
             <h1 class="text-center" th:text="${emprunt != null && emprunt.id != null ? 'Modifier Emprunt' : 'Ajouter un Emprunt'}">
                 Éditer Emprunt

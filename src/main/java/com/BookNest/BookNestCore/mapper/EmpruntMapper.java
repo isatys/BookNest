@@ -22,6 +22,7 @@ public interface EmpruntMapper {
 
     @Mapping(source = "livre.id", target = "livre.id")
     @Mapping(source = "utilisateur.id", target = "utilisateur.id")
+    @Mapping(source = "livre.auteurNom", target = "livre.nomAuteur")
     EmpruntDTO toDto(Emprunt entity);
 
     @Named("mapLivreFromId")

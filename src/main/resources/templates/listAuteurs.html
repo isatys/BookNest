@@ -86,8 +86,10 @@
                                 <small class="text-muted" th:text="${auteur.biographie}">Biographie</small>
                             </div>
                             <div class="book-actions">
-                                <a th:href="@{/pages/editAuteur/{id}(id=${auteur.id})}" class="btn btn-primary btn-sm">Modifier</a>
-                                <a th:href="@{/pages/deleteAuthor/{id}(id=${auteur.id})}" class="btn btn-danger btn-sm" onclick="confirmDelete(event)">Supprimer</a>
+                                <div class="book-actions" th:if="${isAdmin}">
+                                    <a th:href="@{/pages/editAuteur/{id}(id=${auteur.id})}" class="btn btn-primary btn-sm">Modifier</a>
+                                    <a th:href="@{/pages/deleteAuthor/{id}(id=${auteur.id})}" class="btn btn-danger btn-sm" onclick="confirmDelete(event)">Supprimer</a>
+                                </div>
                             </div>
                         </div>
                     </div>

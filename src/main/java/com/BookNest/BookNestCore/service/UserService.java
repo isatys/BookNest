@@ -6,7 +6,9 @@ public interface UserService {
 
     User findByUsername(String username);
 
-    void saveUser(User user);
+    User saveUser(User user);
 
     void addAdminUser(String username,String password);
+
+
 }

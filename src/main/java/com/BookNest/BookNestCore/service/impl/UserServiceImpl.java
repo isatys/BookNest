@@ -1,15 +1,24 @@
 package com.BookNest.BookNestCore.service.impl;
 
+import com.BookNest.BookNestCore.dto.UtilisateurDTO;
+import com.BookNest.BookNestCore.mapper.UtilisateurMapper;
 import com.BookNest.BookNestCore.model.Role;
 import com.BookNest.BookNestCore.model.User;
+import com.BookNest.BookNestCore.model.Utilisateur;
 import com.BookNest.BookNestCore.repository.RoleRepository;
 import com.BookNest.BookNestCore.repository.UserRepository;
+import com.BookNest.BookNestCore.repository.UtilisateurRepository;
 import com.BookNest.BookNestCore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -19,8 +28,10 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private RoleRepository roleRepository;
-    public void saveUser(User user) {
+
+    public User saveUser(User user) {
         userRepository.save(user);
+        return user;
     }
 
 
@@ -45,4 +56,5 @@ public class UserServiceImpl implements UserService {
         user.getRoles().add(adminRole);
         userRepository.save(user);
     }
+
 }

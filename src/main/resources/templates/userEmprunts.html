@@ -92,7 +92,7 @@
                             <p class="mb-1">Utilisateur: <span th:text="${emprunt != null && emprunt.utilisateur != null ? emprunt.utilisateur.nom : 'Nom non disponible'}">Nom de l'utilisateur</span></p>
                             <p class="mb-1">Date de Retour: <span th:text="${emprunt != null ? (emprunt.dateRetour != null ? emprunt.dateRetour : 'Date non disponible') : 'Date non disponible'}">Date de retour</span></p>
 
-                            <div class="book-actions" th:if="${isAdmin}">
+                            <div class="book-actions">
                                 <a th:href="@{/pages/editEmprunt(id=${emprunt?.id})}" class="btn btn-warning btn-sm">Modifier</a>
                                 <a th:href="@{/pages/deleteEmprunt/{id}(id=${emprunt?.id})}" class="btn btn-danger btn-sm" onclick="confirmDelete(event)">Supprimer</a>
                             </div>
@@ -105,64 +105,6 @@
             <p>Aucun emprunt trouvé.</p>
         </div>
     </div>
-
-    <!-- Section d'Édition ou de Création d'Emprunt -->
-    <div class="container">
-        <div class="page-header">
-            <h1 class="text-center" th:text="${emprunt != null && emprunt.id != null ? 'Modifier Emprunt' : 'Ajouter un Emprunt'}">
-                Éditer Emprunt
-            </h1>
-        </div>
-
-        <!-- Formulaire d'édition/création d'emprunt -->
-        <form th:action="@{/pages/saveOrUpdateEmprunt}" th:object="${emprunt}" method="post" class="mt-3" onsubmit="return validateDates()">
-            <!-- Champ caché pour l'ID -->
-            <input type="hidden" th:field="*{id}"/>
-            <div class="form-group">
-                <label for="dateEmprunt">Date d'Emprunt</label>
-                <input type="date" class="form-control" id="dateEmprunt" th:field="*{dateEmprunt}" required>
-            </div>
-            <div class="form-group">
-                <label for="dateRetour">Date de Retour</label>
-                <input type="date" class="form-control" id="dateRetour" th:field="*{dateRetour}" required>
-            </div>
-            <div class="form-group">
-                <label for="livre">Livre</label>
-                <select id="livre" th:field="*{livre.id}" class="form-control">
-                    <option th:each="livre : ${livres}" th:value="${livre.id}" th:text="${livre.titre}"></option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="utilisateur">Utilisateur</label>
-                <select id="utilisateur" th:field="*{utilisateur.id}" class="form-control">
-                    <option value="" th:text="'Sélectionnez un utilisateur'">Sélectionnez un utilisateur</option>
-                    <option th:each="utilisateur : ${utilisateurs}" th:value="${utilisateur.id}" th:text="${utilisateur.nom}"></option>
-                </select>
-                <div class="text-danger" th:if="${#fields.hasErrors('utilisateur')}" th:errors="*{utilisateur}"></div>
-            </div>
-            <button type="submit" class="btn btn-success">Enregistrer</button>
-        </form>
-    </div>
-
-    <script>
-        function validateDates() {
-            const dateEmprunt = document.getElementById('dateEmprunt').value;
-            const dateRetour = document.getElementById('dateRetour').value;
-            if (dateRetour && dateEmprunt > dateRetour) {
-                alert("La date de retour ne peut pas être antérieure à la date d'emprunt.");
-                return false;
-            }
-            return true;
-        }
-
-        function confirmDelete(event) {
-            if (!confirm("Êtes-vous sûr de vouloir supprimer cet emprunt ?")) {
-                event.preventDefault();
-            }
-        }
-    </script>
-
     <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>

@@ -2,7 +2,9 @@ package com.BookNest.BookNestCore.controller;
 
 import com.BookNest.BookNestCore.model.Role;
 import com.BookNest.BookNestCore.model.User;
+import com.BookNest.BookNestCore.model.Utilisateur;
 import com.BookNest.BookNestCore.repository.RoleRepository;
+import com.BookNest.BookNestCore.repository.UtilisateurRepository;
 import com.BookNest.BookNestCore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,6 +21,10 @@ public class SignUpController {
 
     @Autowired
     private RoleRepository roleRepository;
+
+    @Autowired
+    private UtilisateurRepository utilisateurRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -58,8 +64,25 @@ public class SignUpController {
                 .orElseThrow(() -> new RuntimeException("User role not found"));
         newUser.getRoles().add(userRole);
 
-        userService.saveUser(newUser); // Enregistrer l'utilisateur
+        // Enregistrer l'utilisateur
+        userService.saveUser(newUser);
+
+        // Vérifiez si l'utilisateur est un admin ou non
+        boolean isAdmin = newUser.getRoles().stream()
+                .anyMatch(role -> role.getName().equals("ROLE_ADMIN"));
+
+        if (!isAdmin) {
+            // Créer un utilisateur pour la table 'utilisateur'
+            Utilisateur utilisateur = new Utilisateur();
+            utilisateur.setNom(username);
+
+            // Enregistrer l'utilisateur dans la table 'utilisateur'
+            Utilisateur savedUtilisateur  = utilisateurRepository.save(utilisateur);
+            System.out.println("Saved Utilisateur: " + savedUtilisateur); // Debugging
+
+        }
 
         return "redirect:/login"; // Rediriger vers la page de connexion après inscription réussie
     }
+
 }

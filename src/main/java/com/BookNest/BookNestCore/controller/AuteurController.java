@@ -21,6 +21,7 @@ import java.util.Optional;
 @Controller
 @RequestMapping("/pages")
 public class AuteurController {
+
     @Autowired
     private AuteurService auteurService;
     @Autowired
@@ -33,57 +34,61 @@ public class AuteurController {
         List<AuteurDTO> auteurs = auteurService.getAllAuthors();
         model.addAttribute("auteurs", auteurs);
 
-        boolean isAdmin = false;
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
-            Object principal = auth.getPrincipal();
-            if (principal instanceof UserDetails) {
-                UserDetails userDetails = (UserDetails) principal;
-                isAdmin = userDetails.getAuthorities().stream()
-                        .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
-                // Debug
-                System.out.println("isAdmin: " + isAdmin);
-            }
-        }
+        boolean isAdmin = checkIfUserIsAdmin();
         model.addAttribute("newAuteur", new AuteurDTO());
         model.addAttribute("isAdmin", isAdmin);
 
         return "listAuteurs"; // Return the Thymeleaf template name
     }
 
-    public AuteurDTO getAuteurById(Long id) {
-        Optional<Auteur> auteur = auteurRepository.findById(id);
-        if (auteur.isPresent()) {
-            return auteurMapper.auteurToAuteurDTO(auteur.get());
-        } else {
-            throw new RuntimeException("Auteur not found with id: " + id);
-        }
-    }
     @PostMapping("/createAuthor")
     public String createAuteur(
             @Parameter(description = "Détails de l'auteur à créer", required = true) @Valid @ModelAttribute AuteurDTO auteurDTO) {
+        if (!checkIfUserIsAdmin()) {
+            return "redirect:/pages/auteurs"; // Redirect if the user is not an admin
+        }
         auteurService.createAuthor(auteurDTO);
         return "redirect:/pages/auteurs";
     }
 
     @GetMapping("/deleteAuthor/{id}")
     public String deleteAuteur(@PathVariable Long id) {
+        if (!checkIfUserIsAdmin()) {
+            return "redirect:/pages/auteurs"; // Redirect if the user is not an admin
+        }
         auteurService.deleteAuthor(id);
         return "redirect:/pages/auteurs";
     }
 
-    // Show form to edit Auteur
     @GetMapping("/editAuteur/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
+        if (!checkIfUserIsAdmin()) {
+            return "redirect:/pages/auteurs"; // Redirect if the user is not an admin
+        }
         AuteurDTO auteurDTO = auteurService.getAuthorById(id);
         model.addAttribute("auteur", auteurDTO);
         return "editAuteur"; // This should match the name of your Thymeleaf template (editAuteur.html)
     }
 
-    // Handle form submission for updating Auteur
     @PostMapping("/updateAuteur/{id}")
     public String updateAuteur(@PathVariable Long id, @ModelAttribute AuteurDTO auteurDTO) {
+        if (!checkIfUserIsAdmin()) {
+            return "redirect:/pages/auteurs"; // Redirect if the user is not an admin
+        }
         auteurService.updateAuteur(id, auteurDTO);
-        return "redirect:/pages/auteurs"; // Redirect to the list of authors after updating
+        return "redirect:/pages/auteurs";
+    }
+
+    private boolean checkIfUserIsAdmin() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            Object principal = auth.getPrincipal();
+            if (principal instanceof UserDetails) {
+                UserDetails userDetails = (UserDetails) principal;
+                return userDetails.getAuthorities().stream()
+                        .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
+            }
+        }
+        return false;
     }
 }

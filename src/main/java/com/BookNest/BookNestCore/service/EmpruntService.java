@@ -1,6 +1,7 @@
 package com.BookNest.BookNestCore.service;
 
 import com.BookNest.BookNestCore.dto.EmpruntDTO;
+import com.BookNest.BookNestCore.model.Emprunt;
 import com.BookNest.BookNestCore.model.Livre;
 
 import java.util.List;
@@ -13,4 +14,10 @@ public interface EmpruntService {
     void deleteEmprunt(Long id);
 
     List<Livre> getAvailableBooks();
+
+    List<EmpruntDTO> getAllEmpruntsForAdmin();
+
+    List<EmpruntDTO> getEmpruntsByUtilisateur(Long utilisateurId);
+
+    Emprunt findById(Long id);
 }

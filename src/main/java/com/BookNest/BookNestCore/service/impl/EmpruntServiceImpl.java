@@ -6,6 +6,7 @@ import com.BookNest.BookNestCore.model.Emprunt;
 import com.BookNest.BookNestCore.model.Livre;
 import com.BookNest.BookNestCore.repository.EmpruntRepository;
 import com.BookNest.BookNestCore.repository.LivreRepository;
+import com.BookNest.BookNestCore.repository.UserRepository;
 import com.BookNest.BookNestCore.service.EmpruntService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,14 +26,20 @@ public class EmpruntServiceImpl implements EmpruntService {
     @Autowired
     private LivreRepository livreRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public List<EmpruntDTO> getAllEmprunts() {
-        return empruntRepository.findAll().stream().map(empruntMapper::toDto).collect(Collectors.toList());
+        return empruntRepository.findAll().stream()
+                .map(empruntMapper::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
     public EmpruntDTO getEmpruntById(Long id) {
-        Emprunt emprunt = empruntRepository.findById(id).orElseThrow(() -> new RuntimeException("Emprunt not found"));
+        Emprunt emprunt = empruntRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Emprunt not found"));
         return empruntMapper.toDto(emprunt);
     }
 
@@ -44,7 +51,8 @@ public class EmpruntServiceImpl implements EmpruntService {
 
     @Override
     public void updateEmprunt(Long id, EmpruntDTO empruntDTO) {
-        Emprunt emprunt = empruntRepository.findById(id).orElseThrow(() -> new RuntimeException("Emprunt not found"));
+        Emprunt emprunt = empruntRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Emprunt not found"));
         emprunt.setDateEmprunt(empruntDTO.getDateEmprunt());
         emprunt.setDateRetour(empruntDTO.getDateRetour());
         emprunt.setLivre(empruntMapper.mapLivreFromId(empruntDTO.getLivre().getId()));
@@ -64,5 +72,23 @@ public class EmpruntServiceImpl implements EmpruntService {
         return livreRepository.findAll().stream()
                 .filter(livre -> !empruntsLivreIds.contains(livre.getId()))
                 .collect(Collectors.toList());
+    }
+
+    public List<EmpruntDTO> getEmpruntsByUtilisateur(Long utilisateurId) {
+        List<Emprunt> emprunts = empruntRepository.findByUtilisateurId(utilisateurId);
+        return emprunts.stream()
+                .map(empruntMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<EmpruntDTO> getAllEmpruntsForAdmin() {
+        List<Emprunt> emprunts = empruntRepository.findAll();
+        return emprunts.stream()
+                .map(empruntMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public Emprunt findById(Long id) {
+        return empruntRepository.findById(id).orElse(null);
     }
 }
