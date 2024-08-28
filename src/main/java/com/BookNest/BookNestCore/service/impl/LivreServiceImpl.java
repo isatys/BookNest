@@ -1,9 +1,12 @@
 package com.BookNest.BookNestCore.service.impl;
 
 import com.BookNest.BookNestCore.dto.LivreDTO;
+import com.BookNest.BookNestCore.dto.UtilisateurDTO;
 import com.BookNest.BookNestCore.mapper.LivreMapper;
 import com.BookNest.BookNestCore.model.Auteur;
 import com.BookNest.BookNestCore.model.Livre;
+import com.BookNest.BookNestCore.model.User;
+import com.BookNest.BookNestCore.model.Utilisateur;
 import com.BookNest.BookNestCore.repository.AuteurRepository;
 import com.BookNest.BookNestCore.repository.LivreRepository;
 import com.BookNest.BookNestCore.service.LivreService;
@@ -90,6 +93,7 @@ public class LivreServiceImpl implements LivreService {
         return "Livre avec l'ID " + id + " a été supprimé avec succès.";
     }
 
+
     /**
      * Récupère tous les livres.
      *
@@ -122,6 +126,26 @@ public class LivreServiceImpl implements LivreService {
             return LivreMapper.INSTANCE.livreToLivreDTO(updatedLivre);
         }
         return null;
+    }
+
+    public List<Livre> getBestSellers() {
+        // Logique pour récupérer les livres best-sellers
+        return List.of(new Livre("The Passion Within","Romantique", "Woman s Journal", "https://images.pexels.com/photos/256450/pexels-photo-256450.jpeg"));
+    }
+
+    public List<Livre> getNewArrivals() {
+        // Logique pour récupérer les nouveautés
+        return List.of(new Livre("Your Soul is the river", "Comédie", "Nikita Gill", "https://images.pexels.com/photos/904620/pexels-photo-904620.jpeg"));
+    }
+
+    public List<Livre> getMostBorrowedBooks() {
+        // Logique pour récupérer les livres les plus empruntés
+        return List.of(new Livre("Your heart is the sea", "Horreur", "Nikita Gill", "https://images.pexels.com/photos/2228582/pexels-photo-2228582.jpeg"));
+    }
+
+    public List<Livre> getRecommendedBooksForUser() {
+        // Logique pour récupérer les recommandations pour l'utilisateur
+        return List.of(new Livre("My secret plan to rule the world", "Nikita Gill", "Dramatique", "https://images.pexels.com/photos/1765033/pexels-photo-1765033.jpeg"));
     }
 
 }

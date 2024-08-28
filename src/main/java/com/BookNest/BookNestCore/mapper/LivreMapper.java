@@ -33,5 +33,6 @@ public interface LivreMapper {
      * @return le Livre correspondant
      */
     @Mapping(target = "auteurNom", source = "nomAuteur")
+    @Mapping(target = "coverUrl", ignore = true)
     Livre livreDTOToLivre(LivreDTO livreDTO);
 }

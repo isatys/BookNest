@@ -23,18 +23,31 @@ public class Livre {
     @Column(name = "genre")
     private String genre;
 
+    /** Le nom de l'auteur du livre. */
     @Column(name = "auteur_nom")
     private String auteurNom;
+
+    /** URL de l'image de couverture du livre. */
+    @Column(name = "image_url")
+    private String coverUrl;
 
     /** L'auteur qui a écrit le livre. */
     @ManyToOne
     @JoinColumn(name = "auteur_id") // Assure que la colonne auteur_id existe dans la table livres
     @JsonBackReference
     private Auteur auteur;
+
     /**
      * Constructeur par défaut de la classe Livre.
      */
     public Livre() {
+    }
+
+    public Livre(String titre, String genre, String auteurNom, String coverUrl) {
+        this.titre = titre;
+        this.genre = genre;
+        this.auteurNom = auteurNom;
+        this.coverUrl = coverUrl;
     }
 
     /**
@@ -93,12 +106,35 @@ public class Livre {
         this.genre = genre;
     }
 
-
+    /**
+     * Obtient le nom de l'auteur du livre.
+     * @return le nom de l'auteur du livre
+     */
     public String getAuteurNom() {
         return auteurNom;
     }
 
+    /**
+     * Définit le nom de l'auteur du livre.
+     * @param auteurNom le nom de l'auteur du livre à définir
+     */
     public void setAuteurNom(String auteurNom) {
         this.auteurNom = auteurNom;
+    }
+
+    /**
+     * Obtient l'URL de l'image de couverture du livre.
+     * @return l'URL de l'image de couverture du livre
+     */
+    public String getCoverUrl() {
+        return coverUrl;
+    }
+
+    /**
+     * Définit l'URL de l'image de couverture du livre.
+     * @param coverUrl l'URL de l'image de couverture du livre à définir
+     */
+    public void setCoverUrl(String coverUrl) {
+        this.coverUrl = coverUrl;
     }
 }

@@ -1,6 +1,8 @@
 package com.BookNest.BookNestCore.service;
 
 import com.BookNest.BookNestCore.dto.LivreDTO;
+import com.BookNest.BookNestCore.model.Livre;
+import com.BookNest.BookNestCore.model.User;
 
 import java.util.List;
 
@@ -49,4 +51,12 @@ public interface LivreService {
      * @return un message de confirmation de suppression
      */
     String deleteLivre(Long id);
+
+   List<Livre> getRecommendedBooksForUser();
+
+    List<Livre> getMostBorrowedBooks();
+
+    List<Livre> getNewArrivals();
+
+    List<Livre> getBestSellers();
 }
