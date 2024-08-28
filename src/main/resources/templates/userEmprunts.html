@@ -90,11 +90,6 @@
                                 <small th:text="${emprunt != null ? (emprunt.dateEmprunt != null ? emprunt.dateEmprunt : 'Date non disponible') : 'Date non disponible'}">Date d'emprunt</small>
                             </div>
                             <p class="mb-1">Date de Retour: <span th:text="${emprunt != null ? (emprunt.dateRetour != null ? emprunt.dateRetour : 'Date non disponible') : 'Date non disponible'}">Date de retour</span></p>
-
-                            <div class="book-actions">
-                                <a th:href="@{/pages/editEmprunt(id=${emprunt?.id})}" class="btn btn-warning btn-sm">Modifier</a>
-                                <a th:href="@{/pages/deleteEmprunt/{id}(id=${emprunt?.id})}" class="btn btn-danger btn-sm" onclick="confirmDelete(event)">Supprimer</a>
-                            </div>
                         </div>
                     </div>
                 </div>

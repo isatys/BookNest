@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Profil Utilisateur - BookNest</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: auto;
+        }
+        .page-header {
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        .logout-btn {
+            margin-top: 10px;
+        }
+        .menu-item {
+            margin-right: 10px;
+        }
+        .section-header {
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+        .profile-card {
+            border: 1px solid #ddd;
+            border-radius: .25rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .profile-card img {
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+        .profile-card h2 {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+<!-- Barre de navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <a class="nav-link menu-item" th:href="@{/pages/accueil}">Accueil</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link menu-item" th:href="@{/pages/livres}">Livres</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link menu-item" th:href="@{/pages/auteurs}">Auteurs</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link menu-item" th:href="@{/pages/emprunts}">Emprunts</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link menu-item" th:href="@{/pages/profile}">Profil Utilisateur</a>
+        </li>
+    </ul>
+    <div class="my-2 my-lg-0">
+        <a th:href="@{/logout}" class="btn btn-danger logout-btn">Déconnexion</a>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="page-header">
+        <h1 class="text-center">Profil Utilisateur</h1>
+    </div>
+
+    <!-- Message de confirmation -->
+    <div th:if="${message}" style="color: green;">
+        <p th:text="${message}"></p>
+    </div>
+
+    <!-- Formulaire de mise à jour du profil -->
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <div class="profile-card text-center">
+                <img src="https://via.placeholder.com/150" alt="Photo de Profil" />
+                <h2 th:text="${user != null ? user.username : 'Guest'}">Nom d'utilisateur</h2>
+                <form th:action="@{/pages/updateProfile}" th:object="${user}" method="post">
+                    <div class="form-group">
+                        <label for="password">Changer le mot de passe</label>
+                        <input type="password" id="password" class="form-control" th:field="*{password}" placeholder="Nouveau mot de passe">
+                        <div class="form-check mt-2">
+                            <input type="checkbox" class="form-check-input" id="showPassword">
+                            <label class="form-check-label" for="showPassword">Afficher le mot de passe</label>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Sauvegarder les modifications</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Script pour afficher/masquer le mot de passe -->
+<script>
+    document.getElementById('showPassword').addEventListener('change', function () {
+      const passwordField = document.getElementById('password');
+      passwordField.type = this.checked ? 'text' : 'password';
+    });
+  </script>
+<!-- Scripts nécessaires -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>
