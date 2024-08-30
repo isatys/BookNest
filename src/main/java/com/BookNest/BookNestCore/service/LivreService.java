@@ -1,6 +1,8 @@
 package com.BookNest.BookNestCore.service;
 
+import com.BookNest.BookNestCore.dto.AuteurDTO;
 import com.BookNest.BookNestCore.dto.LivreDTO;
+import com.BookNest.BookNestCore.model.Auteur;
 import com.BookNest.BookNestCore.model.Livre;
 import com.BookNest.BookNestCore.model.User;
 
@@ -34,6 +36,8 @@ public interface LivreService {
      * @return une liste de DTOs de livres
      */
     List<LivreDTO> getAllLivres();
+
+    List<Auteur> getAllAuteurs();
 
     /**
      * Met à jour un livre existant.

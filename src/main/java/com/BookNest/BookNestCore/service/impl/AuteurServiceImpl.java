@@ -49,14 +49,17 @@ public class AuteurServiceImpl implements AuteurService {
     }
 
     @Override
+    @Transactional
     public void updateAuteur(Long id, AuteurDTO auteurDTO) {
-        if (auteurRepository.existsById(id)) {
-            Auteur auteur = AuteurMapper.INSTANCE.auteurDTOToAuteur(auteurDTO);
-            auteur.setId(id);
-            auteurRepository.save(auteur);
-        } else {
-            throw new RuntimeException("Auteur not found with id: " + id);
-        }
+        Auteur auteur = auteurRepository.findById(id).orElseThrow(() -> new RuntimeException("Auteur not found"));
+
+        // Mettre à jour uniquement les champs nom et biographie
+        auteur.setNom(auteurDTO.getNom());
+        auteur.setBiographie(auteurDTO.getBiographie());
+
+        // Ne pas toucher à la collection de livres
+        auteurRepository.save(auteur);
     }
+
 }
 

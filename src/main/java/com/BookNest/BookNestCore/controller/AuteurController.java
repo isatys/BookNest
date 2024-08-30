@@ -73,6 +73,7 @@ public class AuteurController {
     @PostMapping("/updateAuteur/{id}")
     public String updateAuteur(@PathVariable Long id, @ModelAttribute AuteurDTO auteurDTO) {
         if (!checkIfUserIsAdmin()) {
+
             return "redirect:/pages/auteurs"; // Redirect if the user is not an admin
         }
         auteurService.updateAuteur(id, auteurDTO);

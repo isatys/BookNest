@@ -1,12 +1,9 @@
 package com.BookNest.BookNestCore.service.impl;
 
 import com.BookNest.BookNestCore.dto.LivreDTO;
-import com.BookNest.BookNestCore.dto.UtilisateurDTO;
 import com.BookNest.BookNestCore.mapper.LivreMapper;
 import com.BookNest.BookNestCore.model.Auteur;
 import com.BookNest.BookNestCore.model.Livre;
-import com.BookNest.BookNestCore.model.User;
-import com.BookNest.BookNestCore.model.Utilisateur;
 import com.BookNest.BookNestCore.repository.AuteurRepository;
 import com.BookNest.BookNestCore.repository.LivreRepository;
 import com.BookNest.BookNestCore.service.LivreService;
@@ -106,6 +103,11 @@ public class LivreServiceImpl implements LivreService {
             throw new EntityNotFoundException("Aucun livre trouvé.");
         }
         return livres.stream().map(LivreMapper.INSTANCE::livreToLivreDTO).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Auteur> getAllAuteurs() {
+        return auteurRepository.findAll(); // Vérifiez que cela fonctionne et retourne des résultats
     }
 
     /**

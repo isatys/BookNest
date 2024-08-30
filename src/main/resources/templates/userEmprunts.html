@@ -86,7 +86,7 @@
                     <div class="list-group">
                         <div th:each="emprunt : ${emprunts}" class="list-group-item list-group-item-action">
                             <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1" th:text="${emprunt != null && emprunt.livre != null ? emprunt.livre.titre : 'Titre non disponible'}">Titre du Livre</h5>
+                                <h5 class="mb-1" th:text="${emprunt != null && emprunt.livre != null ? emprunt.livre.titre : 'Titre non disponible ou supprimé'}">Titre du Livre</h5>
                                 <small th:text="${emprunt != null ? (emprunt.dateEmprunt != null ? emprunt.dateEmprunt : 'Date non disponible') : 'Date non disponible'}">Date d'emprunt</small>
                             </div>
                             <p class="mb-1">Date de Retour: <span th:text="${emprunt != null ? (emprunt.dateRetour != null ? emprunt.dateRetour : 'Date non disponible') : 'Date non disponible'}">Date de retour</span></p>

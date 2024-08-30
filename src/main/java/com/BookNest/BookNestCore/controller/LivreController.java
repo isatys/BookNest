@@ -1,6 +1,8 @@
 package com.BookNest.BookNestCore.controller;
 
 import com.BookNest.BookNestCore.dto.LivreDTO;
+import com.BookNest.BookNestCore.model.Auteur;
+import com.BookNest.BookNestCore.repository.AuteurRepository;
 import com.BookNest.BookNestCore.service.LivreService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
@@ -21,11 +23,15 @@ public class LivreController {
     @Autowired
     private LivreService livreService;
 
+    @Autowired
+    private AuteurRepository auteurRepository;
+
     @GetMapping("/livres")
     public String getAllLivres(Model model) {
         List<LivreDTO> livres = livreService.getAllLivres();
         model.addAttribute("livres", livres);
-
+        List<Auteur> auteurs = auteurRepository.findAll(); // Assurez-vous que la méthode getAllAuteurs() existe
+        model.addAttribute("auteurs", auteurs); // Ajoutez les auteurs au modèle
         // Vérifier si l'utilisateur a le rôle d'administrateur
         boolean isAdmin = false;
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -74,7 +80,10 @@ public class LivreController {
             return "redirect:/pages/livres"; // Redirige vers la liste des livres si non-admin
         }
         LivreDTO livreDTO = livreService.getLivreById(id);
+        List<Auteur> auteurs = livreService.getAllAuteurs(); // Assurez-vous que la méthode getAllAuteurs() existe
+
         model.addAttribute("livre", livreDTO);
+        model.addAttribute("auteurs", auteurs); // Ajout de la liste des auteurs au modèle
         return "editBook"; // This should match the name of your Thymeleaf template (editBook.html)
     }
 

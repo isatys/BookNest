@@ -21,8 +21,15 @@
             <input type="text" class="form-control" id="genre" th:field="*{genre}" required>
         </div>
         <div class="form-group">
-            <label for="auteur.nom">Nom de l'auteur</label>
-            <input type="text" class="form-control" id="auteur.nom" th:field="*{auteur.nom}" required>
+            <label for="nomAuteur">Nom de l'auteur</label>
+            <select class="form-control" id="nomAuteur" th:field="*{nomAuteur}" required>
+                <option value="" disabled selected>Choisir un auteur</option>
+                <option th:each="auteur : ${auteurs}"
+                        th:value="${auteur.nom}"
+                        th:text="${auteur.nom}"
+                        th:selected="${livre.nomAuteur == auteur.nom}">
+                </option>
+            </select>
         </div>
         <button type="submit" class="btn btn-success">Enregistrer les modifications</button>
         <a href="/pages/livres" class="btn btn-secondary">Annuler</a>

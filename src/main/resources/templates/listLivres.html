@@ -117,7 +117,15 @@
             </div>
             <div class="form-group">
                 <label for="nomAuteur">Nom de l'auteur</label>
-                <input type="text" class="form-control" id="nomAuteur" th:field="*{nomAuteur}" required>
+                <select class="form-control" id="nomAuteur" th:field="*{nomAuteur}" required>
+                    <option value="" disabled selected>Choisir un auteur</option>
+                    <option th:each="auteur : ${auteurs}"
+                            th:value="${auteur.nom}"
+                            th:text="${auteur.nom}">
+                    </option>
+                    <p th:if="${#lists.isEmpty(auteurs)}">Aucun auteur disponible</p> <!-- Vérifiez si la liste est vide -->
+
+                </select>
             </div>
             <!-- Autres champs à ajouter selon vos besoins -->
             <button type="submit" class="btn btn-success">Ajouter</button>
