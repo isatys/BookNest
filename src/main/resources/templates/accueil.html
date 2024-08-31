@@ -49,48 +49,44 @@
     </style>
 </head>
 <body>
-<div th:if="${isAdmin}">
-  <p>Vous êtes connecté en tant qu'administrateur.</p>
-  <!-- Ajoutez ici d'autres contenus réservés aux administrateurs -->
-</div>
+
+<!-- Menu de Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+  <ul class="navbar-nav mr-auto">
+    <li class="nav-item">
+      <a class="nav-link menu-item" th:href="@{/pages/accueil}">Accueil</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link menu-item" th:href="@{/pages/livres}">Livres</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link menu-item" th:href="@{/pages/auteurs}">Auteurs</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link menu-item" th:href="@{/pages/emprunts}">Emprunts</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link menu-item" th:href="@{/pages/profile}">Profil Utilisateur</a>
+    </li>
+  </ul>
+  <div class="navbar-search my-2 my-lg-0 d-flex">
+    <!-- Barre de recherche -->
+    <div class="input-group mr-2">
+      <input type="text" class="form-control" placeholder="Rechercher des emprunts..." aria-label="Rechercher"
+             aria-describedby="basic-addon2">
+      <div class="input-group-append">
+        <button class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i></button>
+      </div>
+    </div>
+    <a th:href="@{/logout}" class="btn btn-danger logout-btn">Déconnexion</a>
+  </div>
+</nav>
 
 <div class="container">
   <div class="page-header">
     <h1 class="text-center">Accueil - BookNest</h1>
     <p class="lead text-center">Bienvenue sur BookNest, votre plateforme de gestion de livres.</p>
   </div>
-
-  <!-- Barre de recherche -->
-  <div class="input-group mb-3">
-    <input type="text" class="form-control" placeholder="Rechercher des livres, des auteurs, des emprunts..." aria-label="Rechercher" aria-describedby="basic-addon2">
-    <div class="input-group-append">
-      <button class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i></button>
-    </div>
-  </div>
-
-  <!-- Menu de Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item">
-        <a class="nav-link menu-item" th:href="@{/pages/accueil}">Accueil</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link menu-item" th:href="@{/pages/livres}">Livres</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link menu-item" th:href="@{/pages/auteurs}">Auteurs</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link menu-item" th:href="@{/pages/emprunts}">Emprunts</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link menu-item" th:href="@{/pages/profile}">Profil Utilisateur</a>
-      </li>
-    </ul>
-    <div class="my-2 my-lg-0">
-      <a th:href="@{/logout}" class="btn btn-danger logout-btn">Déconnexion</a>
-    </div>
-  </nav>
 
   <!-- Liste des Livres Best-Sellers -->
   <div class="section-header text-center">
@@ -172,7 +168,6 @@
       </div>
     </div>
   </div>
-
 </div>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>

@@ -1,8 +1,10 @@
 package com.BookNest.BookNestCore.controller;
 
+import com.BookNest.BookNestCore.dto.AuteurDTO;
 import com.BookNest.BookNestCore.dto.EmpruntDTO;
 import com.BookNest.BookNestCore.dto.LivreDTO;
 import com.BookNest.BookNestCore.dto.UtilisateurDTO;
+import com.BookNest.BookNestCore.model.Emprunt;
 import com.BookNest.BookNestCore.model.User;
 import com.BookNest.BookNestCore.service.EmpruntService;
 import com.BookNest.BookNestCore.service.LivreService;
@@ -92,37 +94,15 @@ public class EmpruntController {
         return isAdmin ? "adminEmprunts" : "userEmprunts";
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+
+
     @GetMapping("/editEmprunt/{id}")
-    public String editEmprunt(@PathVariable Long id, Model model) {
-        EmpruntDTO emprunt = empruntService.getEmpruntById(id);
-        List<LivreDTO> livres = livreService.getAllLivres();
-        List<UtilisateurDTO> utilisateurs = utilisateurService.getAllUtilisateurs();
-
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
+        Emprunt emprunt = empruntService.findById(id);
         model.addAttribute("emprunt", emprunt);
-        model.addAttribute("livres", livres);
-        model.addAttribute("utilisateurs", utilisateurs);
-
-        return "editEmprunt";
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/createEmprunt")
-    public String createEmprunt(@ModelAttribute("emprunt") @Valid EmpruntDTO emprunt, BindingResult bindingResult, Model model) {
-        if (emprunt.getDateEmprunt().isAfter(emprunt.getDateRetour())) {
-            bindingResult.rejectValue("dateEmprunt", "error.emprunt", "La date d'emprunt ne peut pas être après la date de retour.");
-        }
-
-        if (bindingResult.hasErrors()) {
-            List<LivreDTO> livres = livreService.getAllLivres();
-            List<UtilisateurDTO> utilisateurs = utilisateurService.getAllUtilisateurs();
-            model.addAttribute("livres", livres);
-            model.addAttribute("utilisateurs", utilisateurs);
-            return "editEmprunt";
-        }
-
-        empruntService.createEmprunt(emprunt);
-        return "redirect:/pages/emprunts";
+        model.addAttribute("livres", emprunt.getLivre());
+        model.addAttribute("utilisateurs", emprunt.getUtilisateur());
+        return "editEmprunt"; // assurez-vous que c'est le bon nom de vue
     }
 
     @PreAuthorize("hasRole('ADMIN')")
