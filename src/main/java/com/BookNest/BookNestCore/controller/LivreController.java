@@ -27,12 +27,38 @@ public class LivreController {
     private AuteurRepository auteurRepository;
 
     @GetMapping("/livres")
-    public String getAllLivres(Model model) {
-        List<LivreDTO> livres = livreService.getAllLivres();
+    public String getAllLivres(
+            @RequestParam(value = "sort", required = false) String sort,
+            @RequestParam(value = "genre", required = false) String genre,
+            Model model) {
+
+        List<LivreDTO> livres;
+
+        // Trier les livres en fonction du critère sélectionné
+        if ("auteur".equals(sort)) {
+            livres = livreService.getAllLivresSortedByAuthor();
+        } else if ("genre".equals(sort)) {
+            livres = livreService.getAllLivresSortedByGenre();
+        } else {
+            livres = livreService.getAllLivresSortedByTitle(); // Par défaut, trier par titre
+        }
+
+        // Filtrer les livres en fonction du genre
+        if (genre != null && !genre.isEmpty()) {
+            livres = livreService.getLivresByGenre(genre);
+        }
+
         model.addAttribute("livres", livres);
-        List<Auteur> auteurs = auteurRepository.findAll(); // Assurez-vous que la méthode getAllAuteurs() existe
-        model.addAttribute("auteurs", auteurs); // Ajoutez les auteurs au modèle
-        // Vérifier si l'utilisateur a le rôle d'administrateur
+
+        // Charger les auteurs et autres attributs comme avant
+        List<Auteur> auteurs = auteurRepository.findAll();
+        model.addAttribute("auteurs", auteurs);
+
+        // Récupérer la liste des genres distincts pour le filtre
+        List<String> genres = livreService.getDistinctGenres();
+        model.addAttribute("genres", genres);
+
+        // Gérer l'affichage pour l'admin
         boolean isAdmin = false;
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
@@ -48,6 +74,8 @@ public class LivreController {
 
         return "listLivres"; // Retourne le nom de la vue Thymeleaf
     }
+
+
 
     @PostMapping("/createLivre")
     public String createLivre(

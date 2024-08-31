@@ -79,7 +79,26 @@
             <h1 class="text-center">Livres - BookNest</h1>
         </div>
 
-    <!-- Contenu dynamique -->
+        <!-- Formulaire de tri et de filtre -->
+        <form th:action="@{/pages/livres}" method="get" class="form-inline mb-3">
+            <label for="sort" class="mr-2">Trier par :</label>
+            <select id="sort" name="sort" class="form-control mr-2">
+                <option value="titre">Titre</option>
+                <option value="auteur">Auteur</option>
+                <option value="genre">Genre</option>
+            </select>
+
+            <label for="genreFilter" class="mr-2">Filtrer par Genre :</label>
+            <select id="genreFilter" name="genre" class="form-control mr-2">
+                <option value="">Tous les genres</option>
+                <option th:each="genre : ${genres}" th:value="${genre}" th:text="${genre}"></option>
+            </select>
+
+            <button type="submit" class="btn btn-primary">Appliquer</button>
+            <a th:href="@{/pages/livres}" class="btn btn-secondary ml-2">Réinitialiser</a>
+        </form>
+
+        <!-- Contenu dynamique -->
     <div class="text-center">
         <!-- Section Livres -->
         <h2>Liste des Livres</h2>
