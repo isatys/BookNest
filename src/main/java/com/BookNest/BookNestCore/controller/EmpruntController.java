@@ -1,27 +1,29 @@
 package com.BookNest.BookNestCore.controller;
 
-import com.BookNest.BookNestCore.dto.AuteurDTO;
+import com.BookNest.BookNestCore.dto.DemandeEmpruntDTO;
 import com.BookNest.BookNestCore.dto.EmpruntDTO;
 import com.BookNest.BookNestCore.dto.LivreDTO;
 import com.BookNest.BookNestCore.dto.UtilisateurDTO;
+import com.BookNest.BookNestCore.mapper.LivreMapper;
+import com.BookNest.BookNestCore.mapper.UtilisateurMapper;
+import com.BookNest.BookNestCore.model.DemandeEmprunt;
 import com.BookNest.BookNestCore.model.Emprunt;
+import com.BookNest.BookNestCore.model.Livre;
 import com.BookNest.BookNestCore.model.User;
-import com.BookNest.BookNestCore.service.EmpruntService;
-import com.BookNest.BookNestCore.service.LivreService;
-import com.BookNest.BookNestCore.service.UserService;
-import com.BookNest.BookNestCore.service.UtilisateurService;
+import com.BookNest.BookNestCore.service.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/pages")
@@ -39,8 +41,17 @@ public class EmpruntController {
     @Autowired
     private LivreService livreService;
 
+    @Autowired
+    private DemandeEmpruntService demandeEmpruntService;
+
     @GetMapping("/emprunts")
     public String getAllEmprunts( @RequestParam(value = "search", required = false) String search, Model model) {
+        List<LivreDTO> livres = livreService.getAllLivres(); // Assurez-vous que cette méthode renvoie la liste des livres
+        model.addAttribute("livres", livres);
+
+        List<DemandeEmpruntDTO> demandeEmprunt = demandeEmpruntService.getAllDemandeEmprunts();
+        model.addAttribute("demandes", demandeEmprunt);
+
         // Récupérer le nom de l'utilisateur connecté
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
@@ -98,6 +109,70 @@ public class EmpruntController {
     }
 
 
+    @GetMapping("/creer")
+    public String creerDemandeForm(Model model) {
+        model.addAttribute("livres", livreService.getAllLivres()); // Liste des livres pour le formulaire
+        model.addAttribute("utilisateurs", utilisateurService.getAllUtilisateurs()); // Liste des utilisateurs pour le formulaire
+        model.addAttribute("demande", new DemandeEmprunt());
+        return "userEmprunts"; // Nom du template Thymeleaf pour le formulaire
+    }
+
+    @PostMapping("/creer")
+    public String creerDemande(@RequestParam Long livreId) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        UserDetails userDetails = (UserDetails) auth.getPrincipal();
+        UtilisateurDTO utilisateur = utilisateurService.getUtilisateurByNom(userDetails.getUsername());
+
+
+        demandeEmpruntService.creerDemandeEmprunt(livreId, utilisateur.getNom());
+        return "redirect:/pages/emprunts";
+    }
+
+    @PostMapping("/accepterDemande")
+    public String accepterDemande(@RequestParam Long demandeId) {
+        DemandeEmprunt demande = demandeEmpruntService.findById(demandeId);
+        Livre livre = demande.getLivre();
+
+        // Vérification de la disponibilité du livre
+        if (livreService.isLivreDisponible(livre.getId())) {
+            UtilisateurDTO utilisateurDTO = UtilisateurMapper.INSTANCE.userToUtilisateurDTO(demande.getUtilisateur());
+            LivreDTO livreDTO = LivreMapper.INSTANCE.livreToLivreDTO(livre);
+
+            empruntService.createEmprunt(new EmpruntDTO(utilisateurDTO, livreDTO));
+            demandeEmpruntService.accepterDemande(demandeId);
+
+            // Envoyer un e-mail à l'utilisateur
+            userService.sendEmail(demande.getUtilisateur().getEmail(), "Demande acceptée",
+                    "Votre demande pour le livre " + livre.getTitre() + " a été acceptée.");
+        } else {
+            return "redirect:/pages/emprunts?error=Le livre n'est pas disponible.";
+        }
+
+        return "redirect:/pages/emprunts?info=Demande acceptée.";
+    }
+
+    @PostMapping("/refuserDemande")
+    public String refuserDemande(@RequestParam Long demandeId) {
+        DemandeEmprunt demande = demandeEmpruntService.findById(demandeId);
+        demandeEmpruntService.refuserDemande(demandeId);
+
+        // Envoyer un e-mail à l'utilisateur
+        userService.sendEmail(demande.getUtilisateur().getEmail(), "Demande refusée",
+                "Votre demande pour le livre " + demande.getLivre().getTitre() + " a été refusée car le livre n'est pas disponible.");
+
+        return "redirect:/pages/emprunts?info=Demande refusée.";
+    }
+
+    @PostMapping("/retour/{id}")
+    public String retournerLivre(@PathVariable Long id, Model model) {
+        try {
+            empruntService.retournerLivre(id);
+            model.addAttribute("infoMessage", "Le livre a été retourné avec succès.");
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+        }
+        return "redirect:/pages/emprunts";
+    }
 
     @GetMapping("/editEmprunt/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {

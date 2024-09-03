@@ -12,6 +12,7 @@ public class EmpruntDTO {
     private UtilisateurDTO utilisateur;
 
     private LocalDate dateEmprunt;
+
     private LocalDate dateRetour;
 
     public Long getId() {
@@ -53,4 +54,15 @@ public class EmpruntDTO {
     public void setDateRetour(LocalDate dateRetour) {
         this.dateRetour = dateRetour;
     }
+
+    // Constructeur par défaut
+    public EmpruntDTO() {}
+
+    // Constructeur avec les paramètres nécessaires
+    public EmpruntDTO(UtilisateurDTO utilisateur, LivreDTO livre) {
+        this.utilisateur = utilisateur;
+        this.livre = livre;
+        this.dateEmprunt = LocalDate.now(); // Exemple, vous pouvez le définir autrement
+    }
+
 }

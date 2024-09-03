@@ -82,6 +82,20 @@
             <h1 class="text-center">Emprunts - BookNest</h1>
         </div>
 
+        <!-- Formulaire de demande d'emprunt -->
+        <div class="text-center mb-4">
+            <h2>Faire une Demande d'Emprunt</h2>
+            <form th:action="@{/pages/creer}" method="post">
+                <div class="form-group">
+                    <label for="livre">Livre</label>
+                    <select id="livre" name="livreId" class="form-control" required>
+                        <option th:each="livre : ${livres}" th:value="${livre.id}" th:text="${livre.titre}"></option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Faire une Demande</button>
+            </form>
+        </div>
+
     <!-- Liste des Emprunts -->
     <div class="text-center">
         <h2>Liste des Emprunts</h2>

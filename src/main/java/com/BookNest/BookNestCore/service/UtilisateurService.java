@@ -8,5 +8,5 @@ public interface UtilisateurService {
 
     List<UtilisateurDTO> getAllUtilisateurs();
 
-    UtilisateurDTO getUtilisateurByNom(String id);
+    UtilisateurDTO getUtilisateurByNom(String nom);
 }

@@ -11,8 +11,11 @@ import com.BookNest.BookNestCore.service.EmpruntService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+import java.sql.Timestamp;
 
 @Service
 public class EmpruntServiceImpl implements EmpruntService {
@@ -28,6 +31,25 @@ public class EmpruntServiceImpl implements EmpruntService {
 
     @Autowired
     private UserRepository userRepository;
+
+    public List<Emprunt> getEmprunts() {
+        return empruntRepository.findAll();
+    }
+
+    public void retournerLivre(Long empruntId) {
+        // Récupérer l'emprunt par ID
+        Optional<Emprunt> optionalEmprunt = empruntRepository.findById(empruntId);
+
+        if (optionalEmprunt.isPresent()) {
+            Emprunt emprunt = optionalEmprunt.get();
+            // Définir la date de retour à la date actuelle
+            emprunt.setDateRetour(LocalDate.now());
+            // Enregistrer les modifications
+            empruntRepository.save(emprunt);
+        } else {
+            throw new RuntimeException("Emprunt non trouvé");
+        }
+    }
 
     @Override
     public List<EmpruntDTO> getAllEmprunts() {
