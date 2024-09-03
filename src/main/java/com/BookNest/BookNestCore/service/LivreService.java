@@ -63,4 +63,16 @@ public interface LivreService {
     List<Livre> getNewArrivals();
 
     List<Livre> getBestSellers();
+
+    List<LivreDTO> getAllLivresSortedByGenre();
+
+    List<LivreDTO> getAllLivresSortedByAuthor();
+
+    List<LivreDTO> getAllLivresSortedByTitle();
+
+    List<String> getDistinctGenres();
+
+    List<LivreDTO> getLivresByGenre(String genre);
+
+    List<LivreDTO> searchLivres(String search);
 }

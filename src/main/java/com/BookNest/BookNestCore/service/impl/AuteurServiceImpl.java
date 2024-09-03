@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,6 +22,7 @@ public class AuteurServiceImpl implements AuteurService {
     public List<AuteurDTO> getAllAuthors() {
         return auteurRepository.findAll()
                 .stream()
+                .sorted(Comparator.comparing(Auteur::getNom)) // Tri par ordre alphabétique croissant du nom
                 .map(AuteurMapper.INSTANCE::auteurToAuteurDTO)
                 .collect(Collectors.toList());
     }
@@ -60,6 +62,15 @@ public class AuteurServiceImpl implements AuteurService {
         // Ne pas toucher à la collection de livres
         auteurRepository.save(auteur);
     }
+
+    @Override
+    public List<AuteurDTO> searchAuthorsByName(String name) {
+        return auteurRepository.findByNomContainingIgnoreCase(name)
+                .stream()
+                .map(AuteurMapper.INSTANCE::auteurToAuteurDTO)
+                .collect(Collectors.toList());
+    }
+
 
 }
 

@@ -9,6 +9,7 @@ import com.BookNest.BookNestCore.repository.LivreRepository;
 import com.BookNest.BookNestCore.service.LivreService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -149,5 +150,47 @@ public class LivreServiceImpl implements LivreService {
         // Logique pour récupérer les recommandations pour l'utilisateur
         return List.of(new Livre("My secret plan to rule the world", "Nikita Gill", "Dramatique", "https://images.pexels.com/photos/1765033/pexels-photo-1765033.jpeg"));
     }
+    public List<LivreDTO> getAllLivresSortedByTitle() {
+        return livreRepository.findAll(Sort.by(Sort.Direction.ASC, "titre"))
+                .stream()
+                .map(LivreMapper.INSTANCE::livreToLivreDTO) // Utilisation correcte du mapper singleton
+                .collect(Collectors.toList());
+    }
 
+    public List<LivreDTO> getAllLivresSortedByAuthor() {
+        return livreRepository.findAll(Sort.by(Sort.Direction.ASC, "auteur.nom")) // Assurez-vous que "auteur.nom" est bien le chemin correct
+                .stream()
+                .map(LivreMapper.INSTANCE::livreToLivreDTO)
+                .collect(Collectors.toList());
+    }
+
+
+    public List<LivreDTO> getAllLivresSortedByGenre() {
+        return livreRepository.findAll(Sort.by(Sort.Direction.ASC, "genre"))
+                .stream()
+                .map(LivreMapper.INSTANCE::livreToLivreDTO) // Utilisation correcte du mapper singleton
+                .collect(Collectors.toList());
+    }
+
+    public List<LivreDTO> getLivresByGenre(String genre) {
+        return livreRepository.findByGenre(genre)
+                .stream()
+                .map(LivreMapper.INSTANCE::livreToLivreDTO)
+                .collect(Collectors.toList());
+    }
+
+    public List<String> getDistinctGenres() {
+        return livreRepository.findDistinctGenres();
+    }
+
+    public List<LivreDTO> searchLivres(String keyword) {
+        if (keyword == null || keyword.isEmpty()) {
+            return getAllLivres(); // Retourne tous les livres si aucun mot-clé n'est fourni
+        }
+
+        return livreRepository.findByTitreContainingIgnoreCaseOrAuteurNomContainingIgnoreCaseOrGenreContainingIgnoreCase(
+                keyword, keyword, keyword).stream()
+                .map(LivreMapper.INSTANCE::livreToLivreDTO)
+                .collect(Collectors.toList());
+    }
 }

@@ -21,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/pages")
@@ -39,7 +40,7 @@ public class EmpruntController {
     private LivreService livreService;
 
     @GetMapping("/emprunts")
-    public String getAllEmprunts(Model model) {
+    public String getAllEmprunts( @RequestParam(value = "search", required = false) String search, Model model) {
         // Récupérer le nom de l'utilisateur connecté
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
@@ -73,16 +74,18 @@ public class EmpruntController {
             emprunts = empruntService.getEmpruntsByUtilisateur(utilisateurId);
         }
 
+        // Si une recherche est effectuée, rediriger vers la page des livres avec le paramètre de recherche
+        if (search != null && !search.isEmpty()) {
+            return "redirect:/pages/livres?search=" + search;
+        }
+
+
         model.addAttribute("emprunts", emprunts);
 
         model.addAttribute("isAdmin", isAdmin);
 
         // Ajouter un nouvel emprunt par défaut pour éviter l'exception
         model.addAttribute("emprunt", new EmpruntDTO());
-
-        // Ajouter les livres disponibles au modèle
-        List<LivreDTO> livres = livreService.getAllLivres();
-        model.addAttribute("livres", livres);
 
         // Ajouter les utilisateurs disponibles au modèle (si nécessaire)
         if (isAdmin) {

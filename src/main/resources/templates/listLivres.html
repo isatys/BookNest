@@ -64,13 +64,11 @@
         </ul>
         <div class="navbar-search my-2 my-lg-0 d-flex">
             <!-- Barre de recherche -->
-            <div class="input-group mr-2">
-                <input type="text" class="form-control" placeholder="Rechercher des emprunts..." aria-label="Rechercher"
-                       aria-describedby="basic-addon2">
-                <div class="input-group-append">
-                    <button class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i></button>
-                </div>
-            </div>
+            <form th:action="@{/pages/livres}" method="get" class="form-inline">
+                <input type="text" name="search" class="form-control mr-2" placeholder="Rechercher des livres..." aria-label="Rechercher"
+                       aria-describedby="basic-addon2" th:value="${param.search}">
+                <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
+            </form>
             <a th:href="@{/logout}" class="btn btn-danger logout-btn">Déconnexion</a>
         </div>
     </nav>
@@ -79,11 +77,22 @@
             <h1 class="text-center">Livres - BookNest</h1>
         </div>
 
-    <!-- Contenu dynamique -->
+        <!-- Formulaire de tri et de filtre -->
+        <form th:action="@{/pages/livres}" method="get" class="form-inline mb-3">
+            <label for="genreFilter" class="mr-2">Filtrer par Genre :</label>
+            <select id="genreFilter" name="genre" class="form-control mr-2">
+                <option value="">Tous les genres</option>
+                <option th:each="genre : ${genres}" th:value="${genre}" th:text="${genre}"></option>
+            </select>
+
+            <button type="submit" class="btn btn-primary">Appliquer</button>
+            <a th:href="@{/pages/livres}" class="btn btn-secondary ml-2">Réinitialiser</a>
+        </form>
+
+        <!-- Contenu dynamique -->
     <div class="text-center">
-        <!-- Section Livres -->
-        <h2>Liste des Livres</h2>
-        <div th:if="${livres}">
+        <!-- Vérification de la présence de livres -->
+        <div th:if="${livres.size() > 0}">
             <div class="row">
                 <div class="col">
                     <div class="list-group">
@@ -106,9 +115,12 @@
                 </div>
             </div>
         </div>
+        <!-- Message si aucun livre n'est trouvé -->
+        <div th:if="${livres.size() == 0}">
+            <p>Aucun livre trouvé pour la recherche : <span th:text="${param.search}"></span></p>
+        </div>
     </div>
 
-    <p th:text="${isAdmin} ? 'Admin' : 'Non Admin'"></p>
     <!-- Bouton Ajouter un Livre (réservé aux administrateurs) -->
     <div th:if="${isAdmin}">
         <h2>Ajouter un Livre</h2>

@@ -1,5 +1,6 @@
 package com.BookNest.BookNestCore.controller;
 
+import com.BookNest.BookNestCore.dto.LivreDTO;
 import com.BookNest.BookNestCore.model.Livre;
 import com.BookNest.BookNestCore.model.User;
 import com.BookNest.BookNestCore.service.LivreService;
@@ -11,8 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/pages")
@@ -25,7 +28,7 @@ public class AccueilController {
     private LivreService bookService; // Injectez le service BookService
 
     @GetMapping("/accueil")
-    public String accueilPage(Model model, Authentication authentication) {
+    public String accueilPage(@RequestParam(value = "search", required = false) String search, Model model, Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
             Object principal = authentication.getPrincipal();
             if (principal instanceof UserDetails) {
@@ -44,6 +47,11 @@ public class AccueilController {
                     model.addAttribute("isUser", isUser(user));
                 }
             }
+        }
+
+        // Si une recherche est effectuée, rediriger vers la page des livres avec le paramètre de recherche
+        if (search != null && !search.isEmpty()) {
+            return "redirect:/pages/livres?search=" + search;
         }
 
         // Récupération des Best-sellers
