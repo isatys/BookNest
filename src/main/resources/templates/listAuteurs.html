@@ -63,7 +63,7 @@
         </ul>
         <div class="navbar-search my-2 my-lg-0 d-flex">
             <!-- Barre de recherche -->
-            <form th:action="@{/pages/auteurs}" method="get" class="form-inline">
+            <form th:action="@{/pages/livres}" method="get" class="form-inline">
                 <input type="text" name="search" class="form-control mr-2" placeholder="Rechercher des livres..." aria-label="Rechercher"
                        aria-describedby="basic-addon2" th:value="${param.search}">
                 <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>

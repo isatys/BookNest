@@ -38,15 +38,10 @@ public class AuteurController {
     public String getAllAuteurs( @RequestParam(value = "search", required = false) String search,
                                  @RequestParam(value = "authorFilter", required = false) String authorFilter,Model model) {
         List<AuteurDTO> auteurs = auteurService.getAllAuthors();
-        List<LivreDTO> livres = livreService.getAllLivres();
 
-        // Filtrer les livres en fonction du critère de recherche
+        // Si une recherche est effectuée, rediriger vers la page des livres avec le paramètre de recherche
         if (search != null && !search.isEmpty()) {
-            livres.stream()
-                    .filter(livre -> livre.getTitre().toLowerCase().contains(search.toLowerCase()) ||
-                            livre.getNomAuteur().toLowerCase().contains(search.toLowerCase()) ||
-                            livre.getGenre().toLowerCase().contains(search.toLowerCase()))
-                    .collect(Collectors.toList());
+            return "redirect:/pages/livres?search=" + search;
         }
 
         if (authorFilter != null && !authorFilter.isEmpty()) {

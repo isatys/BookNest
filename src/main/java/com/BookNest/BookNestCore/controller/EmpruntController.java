@@ -74,14 +74,9 @@ public class EmpruntController {
             emprunts = empruntService.getEmpruntsByUtilisateur(utilisateurId);
         }
 
-        List<LivreDTO> livres = livreService.getAllLivres();
-        // Filtrer les livres en fonction du critère de recherche
+        // Si une recherche est effectuée, rediriger vers la page des livres avec le paramètre de recherche
         if (search != null && !search.isEmpty()) {
-            livres.stream()
-                    .filter(livre -> livre.getTitre().toLowerCase().contains(search.toLowerCase()) ||
-                            livre.getNomAuteur().toLowerCase().contains(search.toLowerCase()) ||
-                            livre.getGenre().toLowerCase().contains(search.toLowerCase()))
-                    .collect(Collectors.toList());
+            return "redirect:/pages/livres?search=" + search;
         }
 
 
@@ -91,8 +86,6 @@ public class EmpruntController {
 
         // Ajouter un nouvel emprunt par défaut pour éviter l'exception
         model.addAttribute("emprunt", new EmpruntDTO());
-
-        model.addAttribute("livres", livres);
 
         // Ajouter les utilisateurs disponibles au modèle (si nécessaire)
         if (isAdmin) {
