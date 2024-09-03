@@ -14,6 +14,7 @@ public interface AuteurService {
 
     void deleteAuthor(Long id);
 
-
     void updateAuteur(Long id, AuteurDTO auteurDTO);
+
+    List<AuteurDTO> searchAuthorsByName(String name);
 }

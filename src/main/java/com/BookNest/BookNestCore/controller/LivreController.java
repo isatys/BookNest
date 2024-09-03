@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/pages")
@@ -30,22 +31,21 @@ public class LivreController {
     public String getAllLivres(
             @RequestParam(value = "sort", required = false) String sort,
             @RequestParam(value = "genre", required = false) String genre,
+            @RequestParam(value = "search", required = false) String search,
             Model model) {
 
         List<LivreDTO> livres;
 
-        // Trier les livres en fonction du critère sélectionné
-        if ("auteur".equals(sort)) {
-            livres = livreService.getAllLivresSortedByAuthor();
-        } else if ("genre".equals(sort)) {
-            livres = livreService.getAllLivresSortedByGenre();
-        } else {
-            livres = livreService.getAllLivresSortedByTitle(); // Par défaut, trier par titre
-        }
+        livres = livreService.getAllLivres();
 
         // Filtrer les livres en fonction du genre
         if (genre != null && !genre.isEmpty()) {
             livres = livreService.getLivresByGenre(genre);
+        }
+
+        // Filtrer les livres en fonction du critère de recherche
+        if (search != null && !search.isEmpty()) {
+            livres = livreService.searchLivres(search);
         }
 
         model.addAttribute("livres", livres);

@@ -73,4 +73,6 @@ public interface LivreService {
     List<String> getDistinctGenres();
 
     List<LivreDTO> getLivresByGenre(String genre);
+
+    List<LivreDTO> searchLivres(String search);
 }

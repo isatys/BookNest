@@ -1,10 +1,12 @@
 package com.BookNest.BookNestCore.controller;
 
 import com.BookNest.BookNestCore.dto.AuteurDTO;
+import com.BookNest.BookNestCore.dto.LivreDTO;
 import com.BookNest.BookNestCore.mapper.AuteurMapper;
 import com.BookNest.BookNestCore.model.Auteur;
 import com.BookNest.BookNestCore.repository.AuteurRepository;
 import com.BookNest.BookNestCore.service.AuteurService;
+import com.BookNest.BookNestCore.service.LivreService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/pages")
@@ -28,13 +31,35 @@ public class AuteurController {
     private AuteurRepository auteurRepository;
     @Autowired
     private AuteurMapper auteurMapper;
+    @Autowired
+    private LivreService livreService;
 
     @GetMapping("/auteurs")
-    public String getAllAuteurs(Model model) {
+    public String getAllAuteurs( @RequestParam(value = "search", required = false) String search,
+                                 @RequestParam(value = "authorFilter", required = false) String authorFilter,Model model) {
         List<AuteurDTO> auteurs = auteurService.getAllAuthors();
+        List<LivreDTO> livres = livreService.getAllLivres();
+
+        // Filtrer les livres en fonction du critère de recherche
+        if (search != null && !search.isEmpty()) {
+            livres.stream()
+                    .filter(livre -> livre.getTitre().toLowerCase().contains(search.toLowerCase()) ||
+                            livre.getNomAuteur().toLowerCase().contains(search.toLowerCase()) ||
+                            livre.getGenre().toLowerCase().contains(search.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        if (authorFilter != null && !authorFilter.isEmpty()) {
+            // Appliquer le filtre de nom d'auteur
+            auteurs = auteurService.searchAuthorsByName(authorFilter);
+        }
+
         model.addAttribute("auteurs", auteurs);
 
         boolean isAdmin = checkIfUserIsAdmin();
+
+
+
         model.addAttribute("newAuteur", new AuteurDTO());
         model.addAttribute("isAdmin", isAdmin);
 

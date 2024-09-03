@@ -19,4 +19,7 @@ public interface LivreRepository extends JpaRepository<Livre, Long> {
 
     @Query("SELECT DISTINCT l.genre FROM Livre l")
     List<String> findDistinctGenres();
+
+    List<Livre> findByTitreContainingIgnoreCaseOrAuteurNomContainingIgnoreCaseOrGenreContainingIgnoreCase(
+            String titre, String auteurNom, String genre);
 }

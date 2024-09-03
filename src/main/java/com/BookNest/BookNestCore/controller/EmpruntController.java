@@ -21,6 +21,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/pages")
@@ -39,7 +40,7 @@ public class EmpruntController {
     private LivreService livreService;
 
     @GetMapping("/emprunts")
-    public String getAllEmprunts(Model model) {
+    public String getAllEmprunts( @RequestParam(value = "search", required = false) String search, Model model) {
         // Récupérer le nom de l'utilisateur connecté
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth.getName();
@@ -73,6 +74,17 @@ public class EmpruntController {
             emprunts = empruntService.getEmpruntsByUtilisateur(utilisateurId);
         }
 
+        List<LivreDTO> livres = livreService.getAllLivres();
+        // Filtrer les livres en fonction du critère de recherche
+        if (search != null && !search.isEmpty()) {
+            livres.stream()
+                    .filter(livre -> livre.getTitre().toLowerCase().contains(search.toLowerCase()) ||
+                            livre.getNomAuteur().toLowerCase().contains(search.toLowerCase()) ||
+                            livre.getGenre().toLowerCase().contains(search.toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+
         model.addAttribute("emprunts", emprunts);
 
         model.addAttribute("isAdmin", isAdmin);
@@ -80,8 +92,6 @@ public class EmpruntController {
         // Ajouter un nouvel emprunt par défaut pour éviter l'exception
         model.addAttribute("emprunt", new EmpruntDTO());
 
-        // Ajouter les livres disponibles au modèle
-        List<LivreDTO> livres = livreService.getAllLivres();
         model.addAttribute("livres", livres);
 
         // Ajouter les utilisateurs disponibles au modèle (si nécessaire)

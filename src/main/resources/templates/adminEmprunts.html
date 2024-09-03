@@ -59,13 +59,11 @@
     </ul>
     <div class="navbar-search my-2 my-lg-0 d-flex">
         <!-- Barre de recherche -->
-        <div class="input-group mr-2">
-            <input type="text" class="form-control" placeholder="Rechercher des emprunts..." aria-label="Rechercher"
-                   aria-describedby="basic-addon2">
-            <div class="input-group-append">
-                <button class="btn btn-outline-secondary" type="button"><i class="fas fa-search"></i></button>
-            </div>
-        </div>
+        <form th:action="@{/pages/emprunts}" method="get" class="form-inline">
+            <input type="text" name="search" class="form-control mr-2" placeholder="Rechercher des livres..." aria-label="Rechercher"
+                   aria-describedby="basic-addon2" th:value="${param.search}">
+            <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
+        </form>
         <a th:href="@{/logout}" class="btn btn-danger logout-btn">Déconnexion</a>
     </div>
 </nav>

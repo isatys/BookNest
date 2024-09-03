@@ -183,4 +183,14 @@ public class LivreServiceImpl implements LivreService {
         return livreRepository.findDistinctGenres();
     }
 
+    public List<LivreDTO> searchLivres(String keyword) {
+        if (keyword == null || keyword.isEmpty()) {
+            return getAllLivres(); // Retourne tous les livres si aucun mot-clé n'est fourni
+        }
+
+        return livreRepository.findByTitreContainingIgnoreCaseOrAuteurNomContainingIgnoreCaseOrGenreContainingIgnoreCase(
+                keyword, keyword, keyword).stream()
+                .map(LivreMapper.INSTANCE::livreToLivreDTO)
+                .collect(Collectors.toList());
+    }
 }

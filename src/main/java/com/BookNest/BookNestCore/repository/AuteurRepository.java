@@ -5,6 +5,8 @@ import com.BookNest.BookNestCore.model.Livre;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 /**
  * Repository pour l'entité Auteur.
  * Utilise JpaRepository pour les opérations CRUD de base.
@@ -19,4 +21,6 @@ public interface AuteurRepository extends JpaRepository<Auteur, Long> {
      * @return l'auteur correspondant au nom donné
      */
     Auteur findByNom(String nom);
+
+    List<Auteur> findByNomContainingIgnoreCase(String nom);
 }
