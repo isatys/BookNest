@@ -167,7 +167,7 @@ public class LivreServiceImpl implements LivreService {
 
     public List<Livre> getRecommendedBooksForUser() {
         // Logique pour récupérer les recommandations pour l'utilisateur
-        return List.of(new Livre("My secret plan to rule the world", "Nikita Gill", "Dramatique", "https://images.pexels.com/photos/1765033/pexels-photo-1765033.jpeg"));
+        return List.of(new Livre("My secret plan to rule the world", "Dramatique", "Nikita Gill", "https://images.pexels.com/photos/1765033/pexels-photo-1765033.jpeg"));
     }
     public List<LivreDTO> getAllLivresSortedByTitle() {
         return livreRepository.findAll(Sort.by(Sort.Direction.ASC, "titre"))

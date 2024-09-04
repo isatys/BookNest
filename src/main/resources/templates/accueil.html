@@ -7,44 +7,73 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
   <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #f4f4f4;
             padding: 20px;
+            font-family: Arial, sans-serif;
+            color: #333;
         }
         .container {
             max-width: 1200px;
             margin: auto;
         }
         .page-header {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             padding-bottom: 10px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 2px solid #ccc;
         }
-        .logout-btn {
-            margin-top: 10px;
+        .navbar {
+            margin-bottom: 30px;
         }
-        .menu-item {
-            margin-right: 10px;
+        .navbar-nav .nav-link {
+            margin-right: 15px;
+        }
+        .navbar-search {
+            display: flex;
+            align-items: center;
+        }
+        .form-control {
+            border-radius: 20px;
+        }
+        .btn-outline-secondary {
+            border-radius: 20px;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+            border: none;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
         }
         .section-header {
             margin-top: 40px;
             margin-bottom: 20px;
-        }
-        .book-card img {
-            height: 300px;
-            object-fit: cover;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ccc;
         }
         .book-card {
-            transition: transform 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid #ddd;
             border-radius: .25rem;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .book-card:hover {
             transform: scale(1.05);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        .book-card img {
+            height: 200px;
+            object-fit: cover;
         }
         .carousel-item img {
             height: 400px;
             object-fit: cover;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #2980b9;
         }
     </style>
 </head>
@@ -52,30 +81,33 @@
 
 <!-- Menu de Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+  <a class="navbar-brand" href="#">BookNest</a>
   <ul class="navbar-nav mr-auto">
     <li class="nav-item">
-      <a class="nav-link menu-item" th:href="@{/pages/accueil}">Accueil</a>
+      <a class="nav-link" th:href="@{/pages/accueil}">Accueil</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link menu-item" th:href="@{/pages/livres}">Livres</a>
+      <a class="nav-link" th:href="@{/pages/livres}">Livres</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link menu-item" th:href="@{/pages/auteurs}">Auteurs</a>
+      <a class="nav-link" th:href="@{/pages/auteurs}">Auteurs</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link menu-item" th:href="@{/pages/emprunts}">Emprunts</a>
+      <a class="nav-link" th:href="@{/pages/emprunts}">Emprunts</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link menu-item" th:href="@{/pages/profile}">Profil Utilisateur</a>
+      <a class="nav-link" th:href="@{/pages/profile}">Profil Utilisateur</a>
     </li>
   </ul>
-  <div class="navbar-search my-2 my-lg-0 d-flex">
-    <form th:action="@{/pages/accueil}" method="get" class="form-inline">
-      <input type="text" name="search" class="form-control mr-2" placeholder="Rechercher des livres..." aria-label="Rechercher"
-             aria-describedby="basic-addon2" th:value="${param.search}">
+  <div class="navbar-search">
+    <!-- Barre de recherche -->
+    <form class="form-inline" method="get" th:action="@{/pages/accueil}">
+      <input aria-describedby="basic-addon2" aria-label="Rechercher" class="form-control mr-2" name="search"
+             placeholder="Rechercher des livres..."
+             th:value="${param.search}" type="text">
       <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
     </form>
-    <a th:href="@{/logout}" class="btn btn-danger logout-btn">Déconnexion</a>
+    <a class="btn btn-danger" th:href="@{/logout}">Déconnexion</a>
   </div>
 </nav>
 
