@@ -32,6 +32,8 @@ public class WebSecurityConfig {
                         .requestMatchers("/swagger-ui/**").permitAll()
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/signup").permitAll()
+                        .requestMatchers("/forgot-password").permitAll()  // Permet l'accès à la page de réinitialisation sans authentification
+                        .requestMatchers("/reset-password").permitAll()   // Permet l'accès au formulaire de réinitialisation du mot de passe
                         .requestMatchers("/admin/**").permitAll()
                         .requestMatchers("/webjars/**", "/swagger-resources/**", "/v3/api-docs/**","/resources/**").permitAll() // Autoriser l'accès aux ressources statiques
                         .requestMatchers("/pages/**").authenticated()

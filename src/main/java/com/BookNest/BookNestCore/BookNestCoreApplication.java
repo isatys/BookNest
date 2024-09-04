@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-//Configuration de latche pour envoyer un email quand l'emprunt sera fini à une semaine de la date de fin
+//Configuration de la tâche pour envoyer un email quand l'emprunt sera fini à une semaine de la date de fin
 @EnableScheduling
 public class BookNestCoreApplication {
 	@Autowired
