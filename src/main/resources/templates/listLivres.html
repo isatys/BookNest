@@ -90,36 +90,54 @@
         </form>
 
         <!-- Contenu dynamique -->
-    <div class="text-center">
-        <!-- Vérification de la présence de livres -->
-        <div th:if="${livres.size() > 0}">
-            <div class="row">
-                <div class="col">
-                    <div class="list-group">
-                        <!-- Affichage dynamique des livres -->
-                        <div th:each="livre : ${livres}" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1" th:text="${livre.titre}">Titre du Livre</h5>
-                                <small class="text-muted" th:text="${livre.nomAuteur}">Auteur</small>
-                            </div>
-                            <p class="mb-1" th:text="${livre.genre}">Genre</p>
-                            <div class="book-actions">
-                                <div class="book-actions" th:if="${isAdmin}">
-                                    <a th:href="@{/pages/editBook/{id}(id=${livre.id})}" class="btn btn-primary btn-sm">Modifier</a>
-                                    <a th:href="@{/pages/deleteBook/{id}(id=${livre.id})}" class="btn btn-danger btn-sm"
-                                       onclick="confirmDelete(event)">Supprimer</a>
+        <div class="text-center">
+            <!-- Vérification de la présence de livres -->
+            <div th:if="${livresPage.content.size() > 0}">
+                <div class="row">
+                    <div class="col">
+                        <div class="list-group">
+                            <!-- Affichage dynamique des livres -->
+                            <div th:each="livre : ${livresPage.content}" class="list-group-item list-group-item-action">
+                                <div class="d-flex w-100 justify-content-between">
+                                    <h5 class="mb-1" th:text="${livre.titre}">Titre du Livre</h5>
+                                    <small class="text-muted" th:text="${livre.nomAuteur}">Auteur</small>
+                                </div>
+                                <p class="mb-1" th:text="${livre.genre}">Genre</p>
+                                <div class="book-actions">
+                                    <div class="book-actions" th:if="${isAdmin}">
+                                        <a th:href="@{/pages/editBook/{id}(id=${livre.id})}" class="btn btn-primary btn-sm">Modifier</a>
+                                        <a th:href="@{/pages/deleteBook/{id}(id=${livre.id})}" class="btn btn-danger btn-sm"
+                                           onclick="confirmDelete(event)">Supprimer</a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+                <nav>
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item" th:if="${livresPage.hasPrevious()}">
+                            <a class="page-link" th:href="@{/pages/livres(page=${livresPage.number - 1}, size=${livresPage.size}, search=${search}, genre=${genre})}" aria-label="Previous">
+                                <span aria-hidden="true">&laquo;</span>
+                            </a>
+                        </li>
+                        <li class="page-item" th:each="i : ${#numbers.sequence(0, livresPage.totalPages - 1)}">
+                            <a class="page-link" th:href="@{/pages/livres(page=${i}, size=${livresPage.size}, search=${search}, genre=${genre})}" th:text="${i + 1}"></a>
+                        </li>
+                        <li class="page-item" th:if="${livresPage.hasNext()}">
+                            <a class="page-link" th:href="@{/pages/livres(page=${livresPage.number + 1}, size=${livresPage.size}, search=${search}, genre=${genre})}" aria-label="Next">
+                                <span aria-hidden="true">&raquo;</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+            <!-- Message si aucun livre n'est trouvé -->
+            <div th:if="${livresPage.content.size() == 0}">
+                <p>Aucun livre trouvé pour la recherche : <span th:text="${search}"></span></p>
             </div>
         </div>
-        <!-- Message si aucun livre n'est trouvé -->
-        <div th:if="${livres.size() == 0}">
-            <p>Aucun livre trouvé pour la recherche : <span th:text="${param.search}"></span></p>
-        </div>
-    </div>
+
 
     <!-- Bouton Ajouter un Livre (réservé aux administrateurs) -->
     <div th:if="${isAdmin}">

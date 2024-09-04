@@ -4,8 +4,6 @@ import com.BookNest.BookNestCore.dto.DemandeEmpruntDTO;
 import com.BookNest.BookNestCore.dto.EmpruntDTO;
 import com.BookNest.BookNestCore.dto.LivreDTO;
 import com.BookNest.BookNestCore.dto.UtilisateurDTO;
-import com.BookNest.BookNestCore.mapper.LivreMapper;
-import com.BookNest.BookNestCore.mapper.UtilisateurMapper;
 import com.BookNest.BookNestCore.model.DemandeEmprunt;
 import com.BookNest.BookNestCore.model.Emprunt;
 import com.BookNest.BookNestCore.model.Livre;

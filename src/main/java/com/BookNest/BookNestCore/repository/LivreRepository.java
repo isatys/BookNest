@@ -5,6 +5,8 @@ import com.BookNest.BookNestCore.model.Livre;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -20,6 +22,8 @@ public interface LivreRepository extends JpaRepository<Livre, Long> {
     @Query("SELECT DISTINCT l.genre FROM Livre l")
     List<String> findDistinctGenres();
 
-    List<Livre> findByTitreContainingIgnoreCaseOrAuteurNomContainingIgnoreCaseOrGenreContainingIgnoreCase(
-            String titre, String auteurNom, String genre);
+    Page<Livre> findByGenre(String genre, Pageable pageable);
+    Page<Livre> findByTitreContainingIgnoreCase(String search, Pageable pageable);
+    Page<Livre> findAll(Pageable pageable); // Pour la pagination sans filtre
+
 }

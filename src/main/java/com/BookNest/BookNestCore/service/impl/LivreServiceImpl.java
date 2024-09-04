@@ -11,6 +11,8 @@ import com.BookNest.BookNestCore.repository.LivreRepository;
 import com.BookNest.BookNestCore.service.LivreService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -80,6 +82,8 @@ public class LivreServiceImpl implements LivreService {
         return livreDto;
     }
 
+
+
     /**
      * Supprime un livre par son identifiant.
      *
@@ -108,6 +112,17 @@ public class LivreServiceImpl implements LivreService {
             throw new EntityNotFoundException("Aucun livre trouvé.");
         }
         return livres.stream().map(LivreMapper.INSTANCE::livreToLivreDTO).collect(Collectors.toList());
+    }
+
+
+    @Override
+    public Page<LivreDTO> getAllLivresPage(Pageable pageable) {
+        Page<Livre> livresPage = livreRepository.findAll(pageable);
+        if (livresPage.isEmpty()) {
+            throw new EntityNotFoundException("Aucun livre trouvé.");
+        }
+        // Mapper les livres en DTOs tout en préservant les informations de pagination
+        return livresPage.map(LivreMapper.INSTANCE::livreToLivreDTO);
     }
 
     @Override
@@ -176,27 +191,21 @@ public class LivreServiceImpl implements LivreService {
                 .collect(Collectors.toList());
     }
 
-    public List<LivreDTO> getLivresByGenre(String genre) {
-        return livreRepository.findByGenre(genre)
-                .stream()
-                .map(LivreMapper.INSTANCE::livreToLivreDTO)
-                .collect(Collectors.toList());
+    public Page<LivreDTO> getLivresByGenre(String genre, Pageable pageable) {
+        // Utilisation de Page directement à partir du repository
+        return livreRepository.findByGenre(genre, pageable)
+                .map(LivreMapper.INSTANCE::livreToLivreDTO);
     }
 
+    public Page<LivreDTO> searchLivres(String search, Pageable pageable) {
+        // Utilisation de Page directement à partir du repository
+        return livreRepository.findByTitreContainingIgnoreCase(search, pageable)
+                .map(LivreMapper.INSTANCE::livreToLivreDTO);
+    }
     public List<String> getDistinctGenres() {
         return livreRepository.findDistinctGenres();
     }
 
-    public List<LivreDTO> searchLivres(String keyword) {
-        if (keyword == null || keyword.isEmpty()) {
-            return getAllLivres(); // Retourne tous les livres si aucun mot-clé n'est fourni
-        }
-
-        return livreRepository.findByTitreContainingIgnoreCaseOrAuteurNomContainingIgnoreCaseOrGenreContainingIgnoreCase(
-                        keyword, keyword, keyword).stream()
-                .map(LivreMapper.INSTANCE::livreToLivreDTO)
-                .collect(Collectors.toList());
-    }
     public boolean isLivreDisponible(Long livreId) {
         // Vérifier si le livre est déjà emprunté et non retourné
         List<Emprunt> emprunts = empruntRepository.findByLivreIdAndDateRetourIsNull(livreId);
