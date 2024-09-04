@@ -19,8 +19,9 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
+
 
     public Set<Role> getRoles() {
         return roles;
