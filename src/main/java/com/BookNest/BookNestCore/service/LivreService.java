@@ -75,4 +75,6 @@ public interface LivreService {
     List<LivreDTO> getLivresByGenre(String genre);
 
     List<LivreDTO> searchLivres(String search);
+
+    boolean isLivreDisponible(Long id);
 }

@@ -19,4 +19,7 @@ public interface EmpruntService {
     List<EmpruntDTO> getEmpruntsByUtilisateur(Long utilisateurId);
 
     Emprunt findById(Long id);
+
+    void retournerLivre(Long empruntId);
+
 }

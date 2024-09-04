@@ -19,6 +19,9 @@ public class Utilisateur {
     @Column(nullable = false)
     private String nom;
 
+    @Column(nullable = false)
+    private String email;
+
     /** La liste des emprunts effectués par l'utilisateur. */
     @OneToMany(mappedBy = "utilisateur", cascade = CascadeType.ALL)
     private List<Emprunt> emprunts;
@@ -80,4 +83,11 @@ public class Utilisateur {
         this.id = id;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
 }

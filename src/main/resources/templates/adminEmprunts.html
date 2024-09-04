@@ -69,9 +69,6 @@
 </nav>
 
 <div class="container">
-    <div class="page-header">
-        <h1 class="text-center">Emprunts - BookNest</h1>
-    </div>
 
     <!-- Affichage des messages d'information ou d'erreur -->
     <div th:if="${errorMessage}" class="alert alert-danger">
@@ -98,7 +95,12 @@
 
                             <div class="book-actions">
                                 <a th:href="@{/pages/editEmprunt/{id}(id=${emprunt?.id})}" class="btn btn-warning btn-sm">Modifier</a>
-                                <a th:href="@{/pages/deleteEmprunt/{id}(id=${emprunt?.id})}" class="btn btn-danger btn-sm" onclick="confirmDelete(event)">Supprimer</a>
+                                <!-- Formulaire pour retourner le livre -->
+                                <form th:action="@{/pages/retour/{id}(id=${emprunt?.id})}" method="post" style="display:inline;">
+                                    <input type="hidden" name="empruntId" th:value="${emprunt?.id}" />
+                                    <button type="submit" class="btn btn-primary btn-sm">Retourner</button>
+                                </form>
+
                             </div>
                         </div>
                     </div>
@@ -109,6 +111,40 @@
             <p>Aucun emprunt trouvé.</p>
         </div>
     </div>
+
+
+    <!-- Liste des Demandes d'Emprunt -->
+    <div class="text-center">
+        <div th:if="${demandes != null && !demandes.isEmpty()}">
+            <h2>Liste des Demandes d'Emprunt</h2>
+            <div class="row">
+                <div class="col">
+                    <div class="list-group">
+                        <div th:each="demande : ${demandes}" class="list-group-item list-group-item-action">
+                            <div class="d-flex w-100 justify-content-between">
+                                <h5 class="mb-1" th:text="${demande != null && demande.livre != null ? demande.livre.titre : 'Titre non disponible'}">Titre du Livre</h5>
+                                <small th:text="${demande != null ? (demande.dateEmprunt != null ? demande.dateEmprunt : 'Date d emprunt non disponible') : 'Date non disponible'}">Date d'emprunt</small>
+                            </div>
+                            <p class="mb-1">Date de Retour: <span th:text="${demande != null ? (demande.dateRetour != null ? demande.dateRetour : 'Date de fin non disponible') : 'Date non disponible'}">Date de retour</span></p>
+                            <p class="mb-1">Utilisateur: <span th:text="${demande != null && demande.utilisateur != null ? demande.utilisateur.nom : 'Nom non disponible'}">Nom de l'utilisateur</span></p>
+                            <div class="book-actions">
+                                <form th:action="@{/pages/accepterDemande}" method="post" style="display:inline;">
+                                    <input type="hidden" name="demandeId" th:value="${demande.id}" />
+                                    <button type="submit" class="btn btn-success btn-sm">Accepter</button>
+                                </form>
+                                <form th:action="@{/pages/refuserDemande}" method="post" style="display:inline;">
+                                    <input type="hidden" name="demandeId" th:value="${demande.id}" />
+                                    <button type="submit" class="btn btn-danger btn-sm">Refuser</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
 
     <!-- Section d'Édition ou de Création d'Emprunt -->
     <div class="container mt-5">

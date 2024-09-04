@@ -7,10 +7,6 @@
 </head>
 <body>
 <div class="container">
-    <div class="page-header">
-        <h1 class="text-center">Modifier Auteur</h1>
-    </div>
-
     <form th:action="@{/pages/updateAuteur/{id}(id=${auteur.id})}" th:object="${auteur}" method="post" class="mt-3">
         <div class="form-group">
             <label for="nom">Nom de l'auteur</label>

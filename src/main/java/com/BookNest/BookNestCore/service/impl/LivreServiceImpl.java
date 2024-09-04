@@ -3,8 +3,10 @@ package com.BookNest.BookNestCore.service.impl;
 import com.BookNest.BookNestCore.dto.LivreDTO;
 import com.BookNest.BookNestCore.mapper.LivreMapper;
 import com.BookNest.BookNestCore.model.Auteur;
+import com.BookNest.BookNestCore.model.Emprunt;
 import com.BookNest.BookNestCore.model.Livre;
 import com.BookNest.BookNestCore.repository.AuteurRepository;
+import com.BookNest.BookNestCore.repository.EmpruntRepository;
 import com.BookNest.BookNestCore.repository.LivreRepository;
 import com.BookNest.BookNestCore.service.LivreService;
 import jakarta.persistence.EntityNotFoundException;
@@ -22,11 +24,13 @@ public class LivreServiceImpl implements LivreService {
 
     private final LivreRepository livreRepository;
     private final AuteurRepository auteurRepository;
+    private final EmpruntRepository empruntRepository;
 
     @Autowired
-    public LivreServiceImpl(LivreRepository livreRepository, AuteurRepository auteurRepository) {
+    public LivreServiceImpl(LivreRepository livreRepository, AuteurRepository auteurRepository, EmpruntRepository empruntRepository) {
         this.livreRepository = livreRepository;
         this.auteurRepository = auteurRepository;
+        this.empruntRepository = empruntRepository;
     }
 
     /**
@@ -189,8 +193,13 @@ public class LivreServiceImpl implements LivreService {
         }
 
         return livreRepository.findByTitreContainingIgnoreCaseOrAuteurNomContainingIgnoreCaseOrGenreContainingIgnoreCase(
-                keyword, keyword, keyword).stream()
+                        keyword, keyword, keyword).stream()
                 .map(LivreMapper.INSTANCE::livreToLivreDTO)
                 .collect(Collectors.toList());
+    }
+    public boolean isLivreDisponible(Long livreId) {
+        // Vérifier si le livre est déjà emprunté et non retourné
+        List<Emprunt> emprunts = empruntRepository.findByLivreIdAndDateRetourIsNull(livreId);
+        return emprunts.isEmpty();
     }
 }

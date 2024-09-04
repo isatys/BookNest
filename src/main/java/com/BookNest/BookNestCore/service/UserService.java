@@ -11,4 +11,5 @@ public interface UserService {
     void addAdminUser(String username,String password);
 
 
+    void sendEmail(String email, String demandeAcceptée, String s);
 }
