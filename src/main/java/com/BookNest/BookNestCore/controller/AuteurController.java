@@ -104,8 +104,7 @@ public class AuteurController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             Object principal = auth.getPrincipal();
-            if (principal instanceof UserDetails) {
-                UserDetails userDetails = (UserDetails) principal;
+            if (principal instanceof UserDetails userDetails) {
                 return userDetails.getAuthorities().stream()
                         .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
             }

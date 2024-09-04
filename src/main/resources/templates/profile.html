@@ -7,63 +7,88 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
+            background-color: #f4f4f4;
             padding: 20px;
+            font-family: Arial, sans-serif;
+            color: #333;
         }
         .container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: auto;
         }
         .page-header {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             padding-bottom: 10px;
-            border-bottom: 1px solid #ddd;
+            border-bottom: 2px solid #ddd;
+        }
+        .navbar {
+            margin-bottom: 30px;
+        }
+        .navbar-nav .nav-link {
+            margin-right: 15px;
         }
         .logout-btn {
             margin-top: 10px;
-        }
-        .menu-item {
-            margin-right: 10px;
-        }
-        .section-header {
-            margin-top: 40px;
-            margin-bottom: 20px;
         }
         .profile-card {
             border: 1px solid #ddd;
             border-radius: .25rem;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            background-color: #fff;
             padding: 20px;
+            text-align: center;
         }
         .profile-card img {
             height: 150px;
+            width: 150px;
             object-fit: cover;
             border-radius: 50%;
             margin-bottom: 20px;
         }
         .profile-card h2 {
             margin-bottom: 20px;
+            font-size: 1.5rem;
+            color: #333;
+        }
+        .form-group label {
+            font-weight: bold;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .form-check-input:checked ~ .form-check-label::before {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .form-check-label {
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
+
 <!-- Barre de navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
+    <a class="navbar-brand" href="#">BookNest</a>
     <ul class="navbar-nav mr-auto">
         <li class="nav-item">
-            <a class="nav-link menu-item" th:href="@{/pages/accueil}">Accueil</a>
+            <a class="nav-link" th:href="@{/pages/accueil}">Accueil</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link menu-item" th:href="@{/pages/livres}">Livres</a>
+            <a class="nav-link" th:href="@{/pages/livres}">Livres</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link menu-item" th:href="@{/pages/auteurs}">Auteurs</a>
+            <a class="nav-link" th:href="@{/pages/auteurs}">Auteurs</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link menu-item" th:href="@{/pages/emprunts}">Emprunts</a>
+            <a class="nav-link" th:href="@{/pages/emprunts}">Emprunts</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link menu-item" th:href="@{/pages/profile}">Profil Utilisateur</a>
+            <a class="nav-link" th:href="@{/pages/profile}">Profil Utilisateur</a>
         </li>
     </ul>
     <div class="my-2 my-lg-0">
@@ -77,14 +102,14 @@
     </div>
 
     <!-- Message de confirmation -->
-    <div th:if="${message}" style="color: green;">
+    <div th:if="${message}" class="alert alert-success">
         <p th:text="${message}"></p>
     </div>
 
     <!-- Formulaire de mise à jour du profil -->
     <div class="row">
-        <div class="col-md-6 offset-md-3">
-            <div class="profile-card text-center">
+        <div class="col-md-8 offset-md-2">
+            <div class="profile-card">
                 <img src="https://via.placeholder.com/150" alt="Photo de Profil" />
                 <h2 th:text="${user != null ? user.username : 'Guest'}">Nom d'utilisateur</h2>
                 <form th:action="@{/pages/updateProfile}" th:object="${user}" method="post">
@@ -106,10 +131,10 @@
 <!-- Script pour afficher/masquer le mot de passe -->
 <script>
     document.getElementById('showPassword').addEventListener('change', function () {
-      const passwordField = document.getElementById('password');
-      passwordField.type = this.checked ? 'text' : 'password';
+        const passwordField = document.getElementById('password');
+        passwordField.type = this.checked ? 'text' : 'password';
     });
-  </script>
+</script>
 <!-- Scripts nécessaires -->
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>

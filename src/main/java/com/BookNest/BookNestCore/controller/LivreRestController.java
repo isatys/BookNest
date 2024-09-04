@@ -1,7 +1,6 @@
 package com.BookNest.BookNestCore.controller;
 
 import com.BookNest.BookNestCore.dto.LivreDTO;
-import com.BookNest.BookNestCore.model.Auteur;
 import com.BookNest.BookNestCore.repository.LivreRepository;
 import com.BookNest.BookNestCore.service.LivreService;
 import io.swagger.v3.oas.annotations.Operation;

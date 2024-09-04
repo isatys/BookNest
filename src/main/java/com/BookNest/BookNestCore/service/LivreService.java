@@ -1,10 +1,10 @@
 package com.BookNest.BookNestCore.service;
 
-import com.BookNest.BookNestCore.dto.AuteurDTO;
 import com.BookNest.BookNestCore.dto.LivreDTO;
 import com.BookNest.BookNestCore.model.Auteur;
 import com.BookNest.BookNestCore.model.Livre;
-import com.BookNest.BookNestCore.model.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -37,6 +37,8 @@ public interface LivreService {
      */
     List<LivreDTO> getAllLivres();
 
+    Page<LivreDTO> getAllLivresPage(Pageable pageable);
+
     List<Auteur> getAllAuteurs();
 
     /**
@@ -64,17 +66,11 @@ public interface LivreService {
 
     List<Livre> getBestSellers();
 
-    List<LivreDTO> getAllLivresSortedByGenre();
-
-    List<LivreDTO> getAllLivresSortedByAuthor();
-
-    List<LivreDTO> getAllLivresSortedByTitle();
-
     List<String> getDistinctGenres();
 
-    List<LivreDTO> getLivresByGenre(String genre);
-
-    List<LivreDTO> searchLivres(String search);
-
     boolean isLivreDisponible(Long id);
+
+    Page<LivreDTO> getLivresByGenre(String genre, Pageable pageable);
+
+    Page<LivreDTO> searchLivres(String search, Pageable pageable);
 }

@@ -7,6 +7,10 @@ import com.BookNest.BookNestCore.service.LivreService;
 import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,21 +36,25 @@ public class LivreController {
             @RequestParam(value = "sort", required = false) String sort,
             @RequestParam(value = "genre", required = false) String genre,
             @RequestParam(value = "search", required = false) String search,
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "6") int size,
             Model model) {
 
         List<LivreDTO> livres;
 
         livres = livreService.getAllLivres();
 
-        // Filtrer les livres en fonction du genre
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.ASC, "titre"));
+        Page<LivreDTO> livresPage = livreService.getAllLivresPage(pageable);
+
+        // Filtrer les livres en fonction du genre et de la recherche
         if (genre != null && !genre.isEmpty()) {
-            livres = livreService.getLivresByGenre(genre);
+            livresPage = livreService.getLivresByGenre(genre, pageable); // Assurez-vous que ce service supporte la pagination
+        } else if (search != null && !search.isEmpty()) {
+            livresPage = livreService.searchLivres(search, pageable); // Assurez-vous que ce service supporte la pagination
         }
 
-        // Filtrer les livres en fonction du critère de recherche
-        if (search != null && !search.isEmpty()) {
-            livres = livreService.searchLivres(search);
-        }
+        model.addAttribute("livresPage", livresPage);
 
         model.addAttribute("livres", livres);
 
@@ -63,8 +71,7 @@ public class LivreController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             Object principal = auth.getPrincipal();
-            if (principal instanceof UserDetails) {
-                UserDetails userDetails = (UserDetails) principal;
+            if (principal instanceof UserDetails userDetails) {
                 isAdmin = userDetails.getAuthorities().stream()
                         .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
             }

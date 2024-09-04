@@ -31,15 +31,13 @@ public class AccueilController {
     public String accueilPage(@RequestParam(value = "search", required = false) String search, Model model, Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated()) {
             Object principal = authentication.getPrincipal();
-            if (principal instanceof UserDetails) {
-                UserDetails userDetails = (UserDetails) principal;
+            if (principal instanceof UserDetails userDetails) {
                 model.addAttribute("username", userDetails.getUsername());
                 model.addAttribute("isAdmin", userDetails.getAuthorities().stream()
                         .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN")));
                 model.addAttribute("isUser", userDetails.getAuthorities().stream()
                         .anyMatch(role -> role.getAuthority().equals("ROLE_USER")));
-            } else if (principal instanceof String) {
-                String username = (String) principal;
+            } else if (principal instanceof String username) {
                 User user = userService.findByUsername(username);
                 if (user != null) {
                     model.addAttribute("username", username);

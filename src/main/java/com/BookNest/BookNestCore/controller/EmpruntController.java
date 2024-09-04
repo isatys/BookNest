@@ -4,8 +4,6 @@ import com.BookNest.BookNestCore.dto.DemandeEmpruntDTO;
 import com.BookNest.BookNestCore.dto.EmpruntDTO;
 import com.BookNest.BookNestCore.dto.LivreDTO;
 import com.BookNest.BookNestCore.dto.UtilisateurDTO;
-import com.BookNest.BookNestCore.mapper.LivreMapper;
-import com.BookNest.BookNestCore.mapper.UtilisateurMapper;
 import com.BookNest.BookNestCore.model.DemandeEmprunt;
 import com.BookNest.BookNestCore.model.Emprunt;
 import com.BookNest.BookNestCore.model.Livre;
@@ -79,11 +77,7 @@ public class EmpruntController {
         List<DemandeEmpruntDTO> allDemandeEmprunts = demandeEmpruntService.getAllDemandeEmprunts();
 
         if (isAdmin) {
-            if (allDemandeEmprunts.isEmpty()) {
-                model.addAttribute("errorMessage", "Aucune demande d'emprunt trouvée.");
-            } else {
-                model.addAttribute("demandes", allDemandeEmprunts);
-            }
+            model.addAttribute("demandes", allDemandeEmprunts);
             // Si l'utilisateur est admin, obtenir tous les emprunts
             emprunts = empruntService.getAllEmprunts();
         } else {
@@ -92,8 +86,6 @@ public class EmpruntController {
                     .filter(demande -> demande.getUtilisateur().getNom().equals(username))
                     .toList();
             if (userDemandeEmprunts.isEmpty()) {
-                model.addAttribute("errorMessage", "Aucune demande d'emprunt trouvée.");
-            } else {
                 model.addAttribute("demandes", userDemandeEmprunts);
             }
             // Récupérer Utilisateur à partir de User

@@ -9,144 +9,159 @@
         body {
             background-color: #f8f9fa;
             padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .navbar-nav .nav-item {
+            margin-right: 10px;
         }
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: auto;
         }
         .page-header {
             margin-bottom: 20px;
-            padding-bottom: 10px;
             border-bottom: 1px solid #ddd;
         }
-        .logout-btn {
-            margin-top: 10px;
+        .alert {
+            margin-bottom: 20px;
         }
-        .menu-item {
-            margin-right: 10px;
+        .form-control {
+            border-radius: .25rem;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            border: none;
+        }
+        .btn-danger:hover {
+            background-color: #c82333;
         }
         .book-actions {
-            white-space: nowrap;
-        }
-
-                .navbar-nav {
-            margin-right: auto;
-        }
-        .navbar-search {
             display: flex;
             align-items: center;
+            gap: 10px;
+        }
+        .book-actions form {
+            display: inline;
         }
     </style>
 </head>
 <body>
 
-    <!-- Affichage des messages d'information ou d'erreur -->
-    <div th:if="${errorMessage}" class="alert alert-danger">
-        <p th:text="${errorMessage}"></p>
-    </div>
-    <div th:if="${infoMessage}" class="alert alert-info">
-        <p th:text="${infoMessage}"></p>
-    </div>
-
-    <!-- Menu de Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link menu-item" th:href="@{/pages/accueil}">Accueil</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link menu-item" th:href="@{/pages/livres}">Livres</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link menu-item" th:href="@{/pages/auteurs}">Auteurs</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link menu-item" th:href="@{/pages/emprunts}">Emprunts</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link menu-item" th:href="@{/pages/profile}">Profil Utilisateur</a>
-            </li>
-        </ul>
-        <div class="navbar-search my-2 my-lg-0 d-flex">
-            <!-- Barre de recherche -->
-            <form th:action="@{/pages/emprunts}" method="get" class="form-inline">
-                <input type="text" name="search" class="form-control mr-2" placeholder="Rechercher des livres..." aria-label="Rechercher"
-                       aria-describedby="basic-addon2" th:value="${param.search}">
-                <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
-            </form>
-            <a th:href="@{/logout}" class="btn btn-danger logout-btn">Déconnexion</a>
-        </div>
-    </nav>
-    <div class="container">
-
-        <!-- Formulaire de demande d'emprunt -->
-        <div class="text-center mb-4">
-            <h2>Faire une Demande d'Emprunt</h2>
-            <form th:action="@{/pages/creer}" method="post">
-                <div class="form-group">
-                    <label for="livre">Livre</label>
-                    <select id="livre" name="livreId" class="form-control" required>
-                        <option th:each="livre : ${livres}" th:value="${livre.id}" th:text="${livre.titre}"></option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="dateDebut">Date de début</label>
-                    <input type="date" id="dateDebut" name="dateDebut" class="form-control" required>
-                </div>
-                <div class="form-group">
-                    <label for="dateFin">Date de fin</label>
-                    <input type="date" id="dateFin" name="dateFin" class="form-control" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Faire une Demande</button>
-            </form>
-        </div>
-
-        <!-- Liste des Demandes d'Emprunt -->
-        <div class="text-center">
-            <div th:if="${demandes != null && !demandes.isEmpty()}">
-                <h2>Liste des Demandes d'Emprunt</h2>
-                <div class="row">
-                    <div class="col">
-                        <div class="list-group">
-                            <div th:each="demande : ${demandes}" class="list-group-item list-group-item-action">
-                                <div class="d-flex w-100 justify-content-between">
-                                    <h5 class="mb-1" th:text="${demande.livre.titre}">Titre du Livre</h5>
-                                    <small th:text="${demande != null ? (demande.dateEmprunt != null ? demande.dateEmprunt : 'Date d emprunt non disponible') : 'Date non disponible'}">Date d'emprunt</small>
-                                </div>
-                                <p class="mb-1">Date de Retour: <span th:text="${demande != null ? (demande.dateRetour != null ? demande.dateRetour : 'Date de fin non disponible') : 'Date non disponible'}">Date de retour</span></p>
-                                <p class="mb-1">Statut: <span th:text="${demande.statut}">Statut de la Demande</span></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Liste des Emprunts -->
-    <div class="text-center">
-        <h2>Liste des Emprunts</h2>
-        <div th:if="${emprunts != null && !emprunts.isEmpty()}">
-            <div class="row">
-                <div class="col">
-                    <div class="list-group">
-                        <div th:each="emprunt : ${emprunts}" class="list-group-item list-group-item-action">
-                            <div class="d-flex w-100 justify-content-between">
-                                <h5 class="mb-1" th:text="${emprunt != null && emprunt.livre != null ? emprunt.livre.titre : 'Titre non disponible ou supprimé'}">Titre du Livre</h5>
-                                <small th:text="${emprunt != null ? (emprunt.dateEmprunt != null ? emprunt.dateEmprunt : 'Date non disponible') : 'Date non disponible'}">Date d'emprunt</small>
-                            </div>
-                            <p class="mb-1">Date de Retour: <span th:text="${emprunt != null ? (emprunt.dateRetour != null ? emprunt.dateRetour : 'Date non disponible') : 'Date non disponible'}">Date de retour</span></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div th:if="${emprunts == null || emprunts.isEmpty()}" class="alert alert-info mt-3">
-            <p>Aucun emprunt trouvé.</p>
-        </div>
-    </div>
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<!-- Affichage des messages d'information ou d'erreur -->
+<div th:if="${errorMessage}" class="alert alert-danger">
+    <p th:text="${errorMessage}"></p>
 </div>
+<div th:if="${infoMessage}" class="alert alert-info">
+    <p th:text="${infoMessage}"></p>
+</div>
+
+<!-- Menu de Navigation -->
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">BookNest</a>
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/pages/accueil}">Accueil</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/pages/livres}">Livres</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/pages/auteurs}">Auteurs</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/pages/emprunts}">Emprunts</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" th:href="@{/pages/profile}">Profil Utilisateur</a>
+        </li>
+    </ul>
+    <div class="navbar-search d-flex align-items-center">
+        <!-- Barre de recherche -->
+        <form th:action="@{/pages/emprunts}" method="get" class="form-inline">
+            <input type="text" name="search" class="form-control mr-2" placeholder="Rechercher des livres..." th:value="${param.search}">
+            <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
+        </form>
+        <a th:href="@{/logout}" class="btn btn-danger ml-2">Déconnexion</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- Formulaire de demande d'emprunt -->
+    <div class="page-header text-center">
+        <h2>Faire une Demande d'Emprunt</h2>
+    </div>
+    <form th:action="@{/pages/creer}" method="post">
+        <div class="form-group">
+            <label for="livre">Livre</label>
+            <select id="livre" name="livreId" class="form-control" required>
+                <option th:each="livre : ${livres}" th:value="${livre.id}" th:text="${livre.titre}"></option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="dateDebut">Date de début</label>
+            <input type="date" id="dateDebut" name="dateDebut" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="dateFin">Date de fin</label>
+            <input type="date" id="dateFin" name="dateFin" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Faire une Demande</button>
+    </form>
+
+    <!-- Liste des Demandes d'Emprunt -->
+    <div class="page-header text-center mt-5">
+        <h2>Liste des Demandes d'Emprunt</h2>
+    </div>
+    <div th:if="${demandes != null && !demandes.isEmpty()}">
+        <div class="list-group">
+            <div th:each="demande : ${demandes}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1" th:text="${demande.livre.titre}">Titre du Livre</h5>
+                    <small th:text="${demande.dateEmprunt}">Date d'emprunt</small>
+                </div>
+                <p class="mb-1">Date de Retour: <span th:text="${demande.dateRetour}">Date de fin</span></p>
+                <p class="mb-1">Statut: <span th:text="${demande.statut}">Statut de la Demande</span></p>
+            </div>
+        </div>
+    </div>
+    <div th:if="${demande == null || demande.isEmpty()}" class="alert alert-info mt-3">
+        <p>Aucun emprunt trouvé.</p>
+    </div>
+
+    <!-- Liste des Emprunts -->
+    <div class="page-header text-center mt-5">
+        <h2>Liste des Emprunts</h2>
+    </div>
+    <div th:if="${emprunts != null && !emprunts.isEmpty()}">
+        <div class="list-group">
+            <div th:each="emprunt : ${emprunts}" class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1" th:text="${emprunt.livre.titre}">Titre du Livre</h5>
+                    <small th:text="${emprunt.dateEmprunt}">Date d'emprunt</small>
+                </div>
+                <p class="mb-1">Date de Retour: <span th:text="${emprunt.dateRetour}">Date de retour</span></p>
+            </div>
+        </div>
+    </div>
+    <div th:if="${emprunts == null || emprunts.isEmpty()}" class="alert alert-info mt-3">
+        <p>Aucun emprunt trouvé.</p>
+    </div>
+
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
