@@ -5,6 +5,7 @@ import com.BookNest.BookNestCore.model.Livre;
 import com.BookNest.BookNestCore.model.Utilisateur;
 import jakarta.persistence.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class DemandeEmpruntDTO {
@@ -19,7 +20,9 @@ public class DemandeEmpruntDTO {
     @ManyToOne
     private Utilisateur utilisateur;
 
-    private LocalDateTime dateDemande;
+    private LocalDate dateEmprunt;
+
+    private LocalDate dateRetour;
 
     @Enumerated(EnumType.STRING)
     private StatutDemande statut;
@@ -48,19 +51,27 @@ public class DemandeEmpruntDTO {
         this.utilisateur = utilisateur;
     }
 
-    public LocalDateTime getDateDemande() {
-        return dateDemande;
-    }
-
-    public void setDateDemande(LocalDateTime dateDemande) {
-        this.dateDemande = dateDemande;
-    }
-
     public StatutDemande getStatut() {
         return statut;
     }
 
     public void setStatut(StatutDemande statut) {
         this.statut = statut;
+    }
+
+    public LocalDate getDateEmprunt() {
+        return dateEmprunt;
+    }
+
+    public void setDateEmprunt(LocalDate dateEmprunt) {
+        this.dateEmprunt = dateEmprunt;
+    }
+
+    public LocalDate getDateRetour() {
+        return dateRetour;
+    }
+
+    public void setDateRetour(LocalDate dateRetour) {
+        this.dateRetour = dateRetour;
     }
 }

@@ -10,6 +10,8 @@ import com.BookNest.BookNestCore.model.DemandeEmprunt;
 import com.BookNest.BookNestCore.model.Emprunt;
 import com.BookNest.BookNestCore.model.Livre;
 import com.BookNest.BookNestCore.model.User;
+import com.BookNest.BookNestCore.repository.DemandeEmpruntRepository;
+import com.BookNest.BookNestCore.repository.EmpruntRepository;
 import com.BookNest.BookNestCore.service.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +46,17 @@ public class EmpruntController {
     @Autowired
     private DemandeEmpruntService demandeEmpruntService;
 
+    @Autowired
+    private DemandeEmpruntRepository demandeRepository;
+
+    @Autowired
+    private EmpruntRepository empruntRepository;
+
     @GetMapping("/emprunts")
     public String getAllEmprunts( @RequestParam(value = "search", required = false) String search, Model model) {
         List<LivreDTO> livres = livreService.getAllLivres(); // Assurez-vous que cette méthode renvoie la liste des livres
         model.addAttribute("livres", livres);
 
-        List<DemandeEmpruntDTO> demandeEmprunt = demandeEmpruntService.getAllDemandeEmprunts();
-        model.addAttribute("demandes", demandeEmprunt);
 
         // Récupérer le nom de l'utilisateur connecté
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -69,10 +75,27 @@ public class EmpruntController {
 
         List<EmpruntDTO> emprunts;
 
+        // Récupérer toutes les demandes d'emprunt
+        List<DemandeEmpruntDTO> allDemandeEmprunts = demandeEmpruntService.getAllDemandeEmprunts();
+
         if (isAdmin) {
+            if (allDemandeEmprunts.isEmpty()) {
+                model.addAttribute("errorMessage", "Aucune demande d'emprunt trouvée.");
+            } else {
+                model.addAttribute("demandes", allDemandeEmprunts);
+            }
             // Si l'utilisateur est admin, obtenir tous les emprunts
             emprunts = empruntService.getAllEmprunts();
         } else {
+            // Pour les utilisateurs non administrateurs : filtrer les demandes d'emprunt par utilisateur
+            List<DemandeEmpruntDTO> userDemandeEmprunts = allDemandeEmprunts.stream()
+                    .filter(demande -> demande.getUtilisateur().getNom().equals(username))
+                    .toList();
+            if (userDemandeEmprunts.isEmpty()) {
+                model.addAttribute("errorMessage", "Aucune demande d'emprunt trouvée.");
+            } else {
+                model.addAttribute("demandes", userDemandeEmprunts);
+            }
             // Récupérer Utilisateur à partir de User
             UtilisateurDTO utilisateur = utilisateurService.getUtilisateurByNom(user.getUsername());
             if (utilisateur == null) {
@@ -118,13 +141,13 @@ public class EmpruntController {
     }
 
     @PostMapping("/creer")
-    public String creerDemande(@RequestParam Long livreId) {
+    public String creerDemande(@RequestParam Long livreId, @RequestParam LocalDate dateDebut, @RequestParam LocalDate dateFin) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         UserDetails userDetails = (UserDetails) auth.getPrincipal();
         UtilisateurDTO utilisateur = utilisateurService.getUtilisateurByNom(userDetails.getUsername());
 
 
-        demandeEmpruntService.creerDemandeEmprunt(livreId, utilisateur.getNom());
+        demandeEmpruntService.creerDemandeEmprunt(livreId, utilisateur.getNom(), dateDebut, dateFin);
         return "redirect:/pages/emprunts";
     }
 
@@ -135,20 +158,19 @@ public class EmpruntController {
 
         // Vérification de la disponibilité du livre
         if (livreService.isLivreDisponible(livre.getId())) {
-            UtilisateurDTO utilisateurDTO = UtilisateurMapper.INSTANCE.userToUtilisateurDTO(demande.getUtilisateur());
-            LivreDTO livreDTO = LivreMapper.INSTANCE.livreToLivreDTO(livre);
-
-            empruntService.createEmprunt(new EmpruntDTO(utilisateurDTO, livreDTO));
             demandeEmpruntService.accepterDemande(demandeId);
 
             // Envoyer un e-mail à l'utilisateur
             userService.sendEmail(demande.getUtilisateur().getEmail(), "Demande acceptée",
                     "Votre demande pour le livre " + livre.getTitre() + " a été acceptée.");
+
+            // Supprimer la demande si elle est refusée
+            demandeRepository.delete(demande);
         } else {
-            return "redirect:/pages/emprunts?error=Le livre n'est pas disponible.";
+            refuserDemande(demandeId);
         }
 
-        return "redirect:/pages/emprunts?info=Demande acceptée.";
+        return "redirect:/pages/emprunts?info=DemandeAcceptee.";
     }
 
     @PostMapping("/refuserDemande")
@@ -160,7 +182,9 @@ public class EmpruntController {
         userService.sendEmail(demande.getUtilisateur().getEmail(), "Demande refusée",
                 "Votre demande pour le livre " + demande.getLivre().getTitre() + " a été refusée car le livre n'est pas disponible.");
 
-        return "redirect:/pages/emprunts?info=Demande refusée.";
+        // Supprimer la demande si elle est refusée
+        demandeRepository.delete(demande);
+        return "redirect:/pages/emprunts?info=DemandeRefusee.";
     }
 
     @PostMapping("/retour/{id}")
@@ -203,13 +227,6 @@ public class EmpruntController {
         }
 
         empruntService.updateEmprunt(id, emprunt);
-        return "redirect:/pages/emprunts";
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/deleteEmprunt/{id}")
-    public String deleteEmprunt(@PathVariable Long id) {
-        empruntService.deleteEmprunt(id);
         return "redirect:/pages/emprunts";
     }
 

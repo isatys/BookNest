@@ -87,7 +87,6 @@
     <!-- Contenu dynamique -->
     <div class="text-center">
         <!-- Section Auteurs -->
-        <h2>Liste des Auteurs</h2>
         <div th:if="${auteurs}">
             <div class="row">
                 <div class="col">
@@ -111,7 +110,6 @@
         </div>
     </div>
 
-    <p th:text="${isAdmin} ? 'Admin' : 'Non Admin'"></p>
     <!-- Bouton Ajouter un Auteur (réservé aux administrateurs) -->
     <div th:if="${isAdmin}">
         <h2>Ajouter un Auteur</h2>

@@ -15,7 +15,6 @@ import com.BookNest.BookNestCore.repository.UtilisateurRepository;
 import com.BookNest.BookNestCore.service.DemandeEmpruntService;
 import com.BookNest.BookNestCore.service.LivreService;
 import com.BookNest.BookNestCore.service.UtilisateurService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,14 +56,12 @@ public class DemandeEmpruntServiceImpl implements DemandeEmpruntService {
     @Override
     public List<DemandeEmpruntDTO> getAllDemandeEmprunts(){
         List<DemandeEmprunt> emprunts = demandeEmpruntRepository.findAll();
-        if (emprunts.isEmpty()) {
-            throw new EntityNotFoundException("Aucun livre trouvé.");
-        }
         return emprunts.stream().map(DemandeEmpruntMapper.INSTANCE::toDto).collect(Collectors.toList());
 
     }
+
     @Override
-    public void creerDemandeEmprunt(Long livreId, String nom) {
+    public void creerDemandeEmprunt(Long livreId, String nom, LocalDate dateEmprunt, LocalDate dateRetour) {
         DemandeEmprunt demande = new DemandeEmprunt();
 
         // Récupérez les objets Livre et Utilisateur depuis les services ou repositories
@@ -73,7 +70,8 @@ public class DemandeEmpruntServiceImpl implements DemandeEmpruntService {
 
         demande.setLivre(empruntMapper.mapLivreFromId(livre.getId()));
         demande.setUtilisateur(empruntMapper.mapUtilisateurFromId(utilisateur.getId()));
-        demande.setDateDemande(LocalDate.now().atStartOfDay()); // Assurez-vous que dateDemande est bien initialisée
+        demande.setDateEmprunt(dateEmprunt);
+        demande.setDateRetour(dateRetour);
         // Set the initial status for the demand
         demande.setStatut(StatutDemande.EN_ATTENTE);
 
@@ -91,6 +89,8 @@ public class DemandeEmpruntServiceImpl implements DemandeEmpruntService {
 
         Emprunt emprunt = new Emprunt();
         emprunt.setLivre(demande.getLivre()); // Utilisez les entités
+        emprunt.setDateEmprunt(demande.getDateEmprunt());
+        emprunt.setDateRetour(demande.getDateRetour());
         emprunt.setUtilisateur(demande.getUtilisateur());
         empruntRepository.save(emprunt);
     }

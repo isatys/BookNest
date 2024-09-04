@@ -42,10 +42,9 @@ public class EmpruntServiceImpl implements EmpruntService {
 
         if (optionalEmprunt.isPresent()) {
             Emprunt emprunt = optionalEmprunt.get();
-            // Définir la date de retour à la date actuelle
-            emprunt.setDateRetour(LocalDate.now());
-            // Enregistrer les modifications
-            empruntRepository.save(emprunt);
+
+            // Si le livre est retourné on supprime l'emprunt
+            empruntRepository.delete(emprunt);
         } else {
             throw new RuntimeException("Emprunt non trouvé");
         }

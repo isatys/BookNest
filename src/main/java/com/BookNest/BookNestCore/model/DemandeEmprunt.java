@@ -5,7 +5,6 @@ import com.BookNest.BookNestCore.Enum.StatutDemande;
 import jakarta.persistence.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "demande_emprunt")
@@ -23,8 +22,13 @@ public class DemandeEmprunt {
     @JoinColumn(name = "utilisateur_id", nullable = false)
     private Utilisateur utilisateur;
 
-    @Column(name = "date_demande", nullable = false)
-    private LocalDateTime dateDemande;
+    /** La date à laquelle l'emprunt a été effectué. */
+    @Column(name = "date_emprunt", nullable = false)
+    private LocalDate dateEmprunt;
+
+    /** La date à laquelle le livre doit être retourné. */
+    @Column(name = "date_retour", nullable = false)
+    private LocalDate dateRetour;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "statut", nullable = false)
@@ -32,8 +36,11 @@ public class DemandeEmprunt {
 
     @PrePersist
     protected void onCreate() {
-        if (this.dateDemande == null) {
-            this.dateDemande = LocalDate.now().atStartOfDay(); // Assignez une valeur par défaut si nécessaire
+        if (this.dateEmprunt == null) {
+            this.dateEmprunt = LocalDate.now(); // Assignez une valeur par défaut si nécessaire
+        }
+        if (this.dateRetour == null) {
+            this.dateRetour = LocalDate.now(); // Assignez une valeur par défaut si nécessaire
         }
     }
 
@@ -60,15 +67,6 @@ public class DemandeEmprunt {
     public void setUtilisateur(Utilisateur utilisateur) {
         this.utilisateur = utilisateur;
     }
-
-    public LocalDateTime getDateDemande() {
-        return dateDemande;
-    }
-
-    public void setDateDemande(LocalDateTime dateDemande) {
-        this.dateDemande = dateDemande;
-    }
-
     public StatutDemande getStatut() {
         return statut;
     }
@@ -76,6 +74,23 @@ public class DemandeEmprunt {
     public void setStatut(StatutDemande statut) {
         this.statut = statut;
     }
-// Getters and Setters
+
+    public LocalDate getDateEmprunt() {
+        return dateEmprunt;
+    }
+
+    public void setDateEmprunt(LocalDate dateEmprunt) {
+        this.dateEmprunt = dateEmprunt;
+    }
+
+    public LocalDate getDateRetour() {
+        return dateRetour;
+    }
+
+    public void setDateRetour(LocalDate dateRetour) {
+        this.dateRetour = dateRetour;
+    }
+
+    // Getters and Setters
     // Constructors
 }
