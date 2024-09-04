@@ -47,7 +47,7 @@ public class SignUpController {
      * @return une redirection vers la page de connexion après une inscription réussie.
      */
     @PostMapping("/signup")
-    public String signUp(@RequestParam String username, @RequestParam String password, Model model) {
+    public String signUp(@RequestParam String username, @RequestParam String password,@RequestParam String  email, Model model) {
         // Vérifier si l'utilisateur existe déjà
         User existingUser = userService.findByUsername(username);
         if (existingUser != null) {
@@ -59,6 +59,8 @@ public class SignUpController {
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(password)); // Encodage du mot de passe
+        newUser.setEmail(email); // Assurez-vous que l'email est défini
+
         // Ajouter le rôle USER par défaut
         Role userRole = roleRepository.findByName("ROLE_USER")
                 .orElseThrow(() -> new RuntimeException("User role not found"));
@@ -75,6 +77,7 @@ public class SignUpController {
             // Créer un utilisateur pour la table 'utilisateur'
             Utilisateur utilisateur = new Utilisateur();
             utilisateur.setNom(username);
+            utilisateur.setEmail(email);
 
             // Enregistrer l'utilisateur dans la table 'utilisateur'
             Utilisateur savedUtilisateur  = utilisateurRepository.save(utilisateur);

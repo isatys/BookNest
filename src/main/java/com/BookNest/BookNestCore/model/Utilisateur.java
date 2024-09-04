@@ -19,13 +19,12 @@ public class Utilisateur {
     @Column(nullable = false)
     private String nom;
 
-    @Column(nullable = false)
-    private String email;
-
     /** La liste des emprunts effectués par l'utilisateur. */
     @OneToMany(mappedBy = "utilisateur", cascade = CascadeType.ALL)
     private List<Emprunt> emprunts;
 
+    @Column(nullable = false, unique = true)
+    private String email;
     /**
      * Obtient l'identifiant de l'utilisateur.
      * @return l'identifiant de l'utilisateur
