@@ -13,7 +13,6 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -169,28 +168,6 @@ public class LivreServiceImpl implements LivreService {
         // Logique pour récupérer les recommandations pour l'utilisateur
         return List.of(new Livre("My secret plan to rule the world", "Dramatique", "Nikita Gill", "https://images.pexels.com/photos/1765033/pexels-photo-1765033.jpeg"));
     }
-    public List<LivreDTO> getAllLivresSortedByTitle() {
-        return livreRepository.findAll(Sort.by(Sort.Direction.ASC, "titre"))
-                .stream()
-                .map(LivreMapper.INSTANCE::livreToLivreDTO) // Utilisation correcte du mapper singleton
-                .collect(Collectors.toList());
-    }
-
-    public List<LivreDTO> getAllLivresSortedByAuthor() {
-        return livreRepository.findAll(Sort.by(Sort.Direction.ASC, "auteur.nom")) // Assurez-vous que "auteur.nom" est bien le chemin correct
-                .stream()
-                .map(LivreMapper.INSTANCE::livreToLivreDTO)
-                .collect(Collectors.toList());
-    }
-
-
-    public List<LivreDTO> getAllLivresSortedByGenre() {
-        return livreRepository.findAll(Sort.by(Sort.Direction.ASC, "genre"))
-                .stream()
-                .map(LivreMapper.INSTANCE::livreToLivreDTO) // Utilisation correcte du mapper singleton
-                .collect(Collectors.toList());
-    }
-
     public Page<LivreDTO> getLivresByGenre(String genre, Pageable pageable) {
         // Utilisation de Page directement à partir du repository
         return livreRepository.findByGenre(genre, pageable)

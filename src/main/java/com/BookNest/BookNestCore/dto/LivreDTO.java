@@ -9,17 +9,12 @@ import jakarta.persistence.GenerationType;
 @Schema(description = "Détails sur le livre")
 public class LivreDTO {
 
-    @Schema(hidden = true)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Schema(description = "Titre du livre", example = "Le Grand Gatsby")
     private String titre;
 
-    @Schema(description = "Genre du livre", example = "Fiction")
     private String genre;
 
-    @Schema(description = "Nom de l'auteur", example = "F. Scott Fitzgerald")
     private String nomAuteur;
 
     public LivreDTO() {}

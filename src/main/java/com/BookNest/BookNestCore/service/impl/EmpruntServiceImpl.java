@@ -21,16 +21,16 @@ import java.sql.Timestamp;
 public class EmpruntServiceImpl implements EmpruntService {
 
     @Autowired
-    private EmpruntRepository empruntRepository;
+    protected EmpruntRepository empruntRepository;
 
     @Autowired
-    private EmpruntMapper empruntMapper;
+    protected EmpruntMapper empruntMapper;
 
     @Autowired
-    private LivreRepository livreRepository;
+    protected LivreRepository livreRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    protected UserRepository userRepository;
 
     public List<Emprunt> getEmprunts() {
         return empruntRepository.findAll();

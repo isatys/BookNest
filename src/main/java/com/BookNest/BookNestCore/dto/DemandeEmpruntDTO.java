@@ -10,21 +10,16 @@ import java.time.LocalDateTime;
 
 public class DemandeEmpruntDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
     private Livre livre;
 
-    @ManyToOne
     private Utilisateur utilisateur;
 
     private LocalDate dateEmprunt;
 
     private LocalDate dateRetour;
 
-    @Enumerated(EnumType.STRING)
     private StatutDemande statut;
 
     public Long getId() {

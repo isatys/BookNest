@@ -6,8 +6,6 @@ import jakarta.persistence.GenerationType;
 
 public class UtilisateurDTO {
 
-    @Schema(hidden = true)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nom;
 
