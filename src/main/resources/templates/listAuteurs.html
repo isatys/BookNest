@@ -75,7 +75,9 @@
 
 <!-- Menu de Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
-    <a class="navbar-brand" href="#">BookNest</a>
+    <a class="navbar-brand" th:href="@{/pages/accueil}">
+        <img src="/images/logo.png" alt="Logo" style="height: 40px; width: auto;">
+        BookNest</a>
     <ul class="navbar-nav mr-auto">
         <li class="nav-item">
             <a class="nav-link" th:href="@{/pages/accueil}">Accueil</a>

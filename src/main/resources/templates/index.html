@@ -6,23 +6,106 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            background-color: #f8f9fa;
+            background: url('/images/fond.jpg') no-repeat center center fixed;
+            background-size: cover;
+            color: #fff;
             padding-top: 60px;
+            font-family: Arial, sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+            z-index: -1;
+        }
+        .navbar-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px;
+            text-align: center;
+            z-index: 1;
+        }
+        .navbar-container img {
+            height: 50px; /* Adjust logo size */
         }
         .container {
             max-width: 800px;
             margin: 0 auto;
+            text-align: center;
+            padding: 100px 20px;
+            position: relative;
+            z-index: 1; /* Ensure content is above the overlay */
+        }
+        .container h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            animation: fadeIn 2s ease-in;
+        }
+        .container p {
+            font-size: 1.25rem;
+            margin-bottom: 30px;
+            animation: fadeIn 2s ease-in 0.5s;
+        }
+        .highlight {
+            position: relative;
+            display: inline-block;
+            font-weight: bold;
+            font-size: 3rem;
+            color: #f8f9fa; /* Light text color */
+            animation: textGlow 1.5s ease-in-out infinite alternate, zoomIn 1.5s ease-in-out infinite alternate;
+        }
+        @keyframes textGlow {
+            from {
+                text-shadow: 0 0 5px #5a3a29, 0 0 10px #5a3a29, 0 0 15px #5a3a29, 0 0 20px #5a3a29, 0 0 25px #5a3a29, 0 0 30px #5a3a29, 0 0 35px #5a3a29;
+            }
+            to {
+                text-shadow: 0 0 10px #3d2a1f, 0 0 20px #3d2a1f, 0 0 30px #3d2a1f, 0 0 40px #3d2a1f, 0 0 50px #3d2a1f, 0 0 60px #3d2a1f, 0 0 70px #3d2a1f;
+            }
+        }
+        @keyframes zoomIn {
+            from {
+                transform: scale(1);
+            }
+            to {
+                transform: scale(1.1);
+            }
+        }
+        .btn-primary {
+            background-color: #5a3a29; /* Dark brown color */
+            border-color: #5a3a29;
+            border-radius: 50px; /* Rounded button */
+            padding: 10px 20px;
+            transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+        }
+        .btn-primary:hover {
+            background-color: #3d2a1f; /* Even darker brown on hover */
+            border-color: #3d2a1f;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow effect */
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
     </style>
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-    <a class="navbar-brand" href="#">BookNest</a>
-</nav>
-<div class="container mt-5">
-    <h1 class="text-center mb-4">Bienvenue sur BookNest</h1>
-    <p class="lead">BookNest est votre plateforme de gestion de livres préférée. Explorez notre collection, ajoutez des livres à votre liste de lecture, et bien plus encore.</p>
-    <p class="text-center">
+<div class="overlay"></div>
+<div class="navbar-container">
+    <a href="#">
+        <img src="/images/logo.png" alt="Logo">
+    </a>
+</div>
+<div class="container">
+    <h1>Bienvenue sur <span class="highlight">BookNest</span></h1>
+    <p>BookNest est votre plateforme de gestion de livres préférée. Explorez notre collection, ajoutez des livres à votre liste de lecture, et bien plus encore.</p>
+    <p>
         <a class="btn btn-primary" th:href="@{/login}">Se connecter</a>
     </p>
 </div>

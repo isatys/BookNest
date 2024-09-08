@@ -7,73 +7,134 @@
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
   <style>
         body {
-            background-color: #f4f4f4;
-            padding: 20px;
+            background-image: url('/images/fond.png'); /* Vous pouvez remplacer ceci par le bon chemin */
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-attachment: fixed;
+            background-size: cover;
             font-family: Arial, sans-serif;
-            color: #333;
+            position: relative;
         }
+
+        /* Overlay for making text stand out */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5); /* semi-transparent overlay */
+            z-index: -1;
+        }
+
         .container {
             max-width: 1200px;
             margin: auto;
+            background-color: rgba(255, 255, 255, 0.9); /* white box with transparency */
+            padding: 20px;
+            border-radius: 10px;
         }
+
         .page-header {
             margin-bottom: 30px;
             padding-bottom: 10px;
             border-bottom: 2px solid #ccc;
         }
+
         .navbar {
             margin-bottom: 30px;
+            background-color: rgba(255, 255, 255, 0.8); /* Make the navbar semi-transparent */
         }
+
         .navbar-nav .nav-link {
             margin-right: 15px;
         }
+
         .navbar-search {
             display: flex;
             align-items: center;
         }
+
         .form-control {
             border-radius: 20px;
         }
+
         .btn-outline-secondary {
             border-radius: 20px;
         }
+
         .btn-danger {
             background-color: #e74c3c;
             border: none;
         }
+
         .btn-danger:hover {
             background-color: #c0392b;
         }
+
         .section-header {
             margin-top: 40px;
             margin-bottom: 20px;
             padding-bottom: 10px;
             border-bottom: 2px solid #ccc;
+            animation: fadeInUp 1s ease-in-out; /* Animation for headers */
         }
+
+        /* Animations */
         .book-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
             border: 1px solid #ddd;
             border-radius: .25rem;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: zoomIn 1s ease;
         }
+
         .book-card:hover {
             transform: scale(1.05);
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
+
         .book-card img {
             height: 200px;
             object-fit: cover;
         }
+
         .carousel-item img {
             height: 400px;
             object-fit: cover;
         }
+
         .btn-primary {
             background-color: #3498db;
             border: none;
         }
+
         .btn-primary:hover {
             background-color: #2980b9;
+        }
+
+        /* Animations using CSS keyframes */
+        @keyframes zoomIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
     </style>
 </head>
@@ -81,7 +142,9 @@
 
 <!-- Menu de Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-3">
-  <a class="navbar-brand" href="#">BookNest</a>
+  <a class="navbar-brand" th:href="@{/pages/accueil}">
+    <img src="/images/logo.png" alt="Logo" style="height: 40px; width: auto;">
+    BookNest</a>
   <ul class="navbar-nav mr-auto">
     <li class="nav-item">
       <a class="nav-link" th:href="@{/pages/accueil}">Accueil</a>
@@ -135,7 +198,6 @@
           </div>
         </div>
       </div>
-      <!-- Ajoutez d'autres items pour les best-sellers si nécessaire -->
     </div>
     <a class="carousel-control-prev" href="#bestSellersCarousel" role="button" data-slide="prev">
       <span class="carousel-control-prev-icon" aria-hidden="true"></span>

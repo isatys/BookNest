@@ -35,6 +35,7 @@ public class WebSecurityConfig {
                         .requestMatchers("/forgot-password").permitAll()  // Permet l'accès à la page de réinitialisation sans authentification
                         .requestMatchers("/reset-password").permitAll()   // Permet l'accès au formulaire de réinitialisation du mot de passe
                         .requestMatchers("/admin/**").permitAll()
+                        .requestMatchers("/images/**").permitAll()  // Autoriser l'accès aux ressources images
                         .requestMatchers("/webjars/**", "/swagger-resources/**", "/v3/api-docs/**","/resources/**").permitAll() // Autoriser l'accès aux ressources statiques
                         .requestMatchers("/pages/**").authenticated()
                         .anyRequest().authenticated()
