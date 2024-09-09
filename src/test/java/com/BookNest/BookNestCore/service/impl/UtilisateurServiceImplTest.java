@@ -10,6 +10,8 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -64,5 +66,36 @@ public class UtilisateurServiceImplTest {
 
         // Assert
         assertNull(result);
+    }
+
+    @Test
+    void getAllUtilisateurs_ShouldReturnListOfUtilisateurDTOs() {
+        // Arrange
+        Utilisateur user1 = new Utilisateur();
+        user1.setNom("User1");
+
+        Utilisateur user2 = new Utilisateur();
+        user2.setNom("User2");
+
+        UtilisateurDTO userDTO1 = new UtilisateurDTO();
+        userDTO1.setNom("User1");
+
+        UtilisateurDTO userDTO2 = new UtilisateurDTO();
+        userDTO2.setNom("User2");
+
+        // Simuler l'appel à findAll() pour renvoyer une liste d'utilisateurs
+        when(utilisateurRepository.findAll()).thenReturn(Arrays.asList(user1, user2));
+
+        // Simuler le mapping de chaque Utilisateur vers UtilisateurDTO
+        when(utilisateurMapper.userToUtilisateurDTO(user1)).thenReturn(userDTO1);
+        when(utilisateurMapper.userToUtilisateurDTO(user2)).thenReturn(userDTO2);
+
+        // Act
+        List<UtilisateurDTO> result = utilisateurService.getAllUtilisateurs();
+
+        // Assert
+        assertEquals(2, result.size());
+        assertEquals("User1", result.get(0).getNom());
+        assertEquals("User2", result.get(1).getNom());
     }
 }
