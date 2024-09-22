@@ -14,15 +14,6 @@
 	<description>Bibliothèque</description>
 	<properties>
 		<java.version>17</java.version>
-		<sonar.host.url>http://localhost:9000</sonar.host.url>
-		<sonar.login>sqp_be9dd91ea8f13064726bd0c02d6843ce0866ff0f</sonar.login>
-		<sonar.projectKey>isatys_BookNest_d13eaa26-39d3-4db9-b9db-72675c6e98bc</sonar.projectKey>
-		<sonar.projectName>BookNestCore</sonar.projectName>
-		<sonar.projectVersion>0.0.1</sonar.projectVersion>
-		<sonar.sources>src/main/java</sonar.sources>
-		<sonar.tests>src/test/java</sonar.tests>
-		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-		<jacoco.version>0.8.8</jacoco.version>
 		<springdoc.version>2.5.0</springdoc.version> <!-- Assurez-vous que la version est définie ici -->
 	</properties>
 
@@ -105,33 +96,8 @@
 	<build>
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>sonar-maven-plugin</artifactId>
-				<version>3.9.1.2184</version>
-			</plugin>
-			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>${jacoco.version}</version>
-				<executions>
-					<execution>
-						<id>prepare-agent</id>
-						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>report</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>report</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 		</plugins>
 	</build>

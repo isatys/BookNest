@@ -61,6 +61,10 @@ Pour analyser votre code avec SonarQube, assurez-vous que SonarQube est en cours
 
    ```bash
    http://localhost:9000
+   
+ou
+   ```bash
+   mvn sonar:sonar
 
 # Accéder à l'analyse du projet par SonarQube
 lien vers l'interface de sonarQube du projet : http://localhost:9000/
