@@ -21,7 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.springframework.boot.test.context.SpringBootTest;
+
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -33,7 +33,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+
  class DemandeEmpruntServiceImplTest {
 
     @Mock
