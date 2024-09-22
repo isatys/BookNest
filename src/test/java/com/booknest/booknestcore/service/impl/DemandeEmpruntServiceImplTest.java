@@ -21,6 +21,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
@@ -32,7 +33,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class DemandeEmpruntServiceImplTest {
+@SpringBootTest
+ class DemandeEmpruntServiceImplTest {
 
     @Mock
     private DemandeEmpruntRepository demandeEmpruntRepository;
@@ -95,7 +97,6 @@ public class DemandeEmpruntServiceImplTest {
         DemandeEmprunt demande2 = new DemandeEmprunt();
         DemandeEmpruntDTO dto1 = new DemandeEmpruntDTO();
         dto1.setStatut(StatutDemande.EN_ATTENTE);
-        DemandeEmpruntDTO dto2 = new DemandeEmpruntDTO();
 
         when(demandeEmpruntRepository.findAll()).thenReturn(Arrays.asList(demande1, demande2));
 

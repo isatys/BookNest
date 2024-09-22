@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +27,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class LivreServiceImplTest {
+@SpringBootTest
+ class LivreServiceImplTest {
 
     @Mock
     private LivreRepository livreRepository;
@@ -201,7 +203,6 @@ public class LivreServiceImplTest {
     void getAllLivres_ShouldReturnLivreDTOList_WhenLivresExist() {
         // Arrange
         List<Livre> livres = Arrays.asList(new Livre(), new Livre());
-        List<LivreDTO> livreDTOs = Arrays.asList(new LivreDTO(), new LivreDTO());
 
         when(livreRepository.findAll()).thenReturn(livres);
         when(livreMapper.livreToLivreDTO(any(Livre.class))).thenReturn(new LivreDTO());

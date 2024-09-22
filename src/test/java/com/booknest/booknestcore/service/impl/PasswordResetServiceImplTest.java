@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -19,7 +20,8 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-public class PasswordResetServiceImplTest {
+@SpringBootTest
+ class PasswordResetServiceImplTest {
 
     @Mock
     private PasswordResetTokenRepository passwordResetTokenRepository;
@@ -46,7 +48,7 @@ public class PasswordResetServiceImplTest {
 
     // Test pour la méthode generateResetToken
     @Test
-    public void generateResetToken_ShouldReturnValidUUID() {
+     void generateResetToken_ShouldReturnValidUUID() {
         // Act
         String token = passwordResetService.generateResetToken();
 
@@ -57,7 +59,7 @@ public class PasswordResetServiceImplTest {
 
     // Test pour la méthode createPasswordResetTokenForUser quand l'utilisateur existe
     @Test
-    public void createPasswordResetTokenForUser_ShouldCreateAndSendEmail_WhenUserExists() {
+     void createPasswordResetTokenForUser_ShouldCreateAndSendEmail_WhenUserExists() {
         // Arrange
         String email = "user@example.com";
         User user = new User();
@@ -76,7 +78,7 @@ public class PasswordResetServiceImplTest {
 
     // Test pour la méthode createPasswordResetTokenForUser quand l'utilisateur n'existe pas
     @Test
-    public void createPasswordResetTokenForUser_ShouldDoNothing_WhenUserDoesNotExist() {
+     void createPasswordResetTokenForUser_ShouldDoNothing_WhenUserDoesNotExist() {
         // Arrange
         String email = "nonexistent@example.com";
 
@@ -93,7 +95,7 @@ public class PasswordResetServiceImplTest {
 
     // Test pour vérifier si le jeton est bien sauvegardé
     @Test
-    public void createPasswordResetTokenForUser_ShouldSaveResetTokenWithCorrectValues() {
+     void createPasswordResetTokenForUser_ShouldSaveResetTokenWithCorrectValues() {
         // Arrange
         String email = "user@example.com";
         User user = new User();
