@@ -33,4 +33,4 @@ jobs:
       - name: SonarQube Scan
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}  # Ajoutez votre token SonarQube dans les secrets de votre dépôt
-        run: mvn sonar:sonar -Dsonar.projectKey=BookNestCore -Dsonar.host.url=http://localhost:9000 -Dsonar.login=$SONAR_TOKEN
+        run: mvn sonar:sonar -Dsonar.projectKey=squ_f44dd17dddccc10ce3cbde364d0196536f063339 -Dsonar.host.url=http://localhost:9000 -Dsonar.login=$SONAR_TOKEN
