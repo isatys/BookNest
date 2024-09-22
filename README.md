@@ -61,3 +61,13 @@ Pour analyser votre code avec SonarQube, assurez-vous que SonarQube est en cours
 
    ```bash
    http://localhost:9000
+
+# Accéder à l'analyse du projet par SonarQube
+lien vers l'interface de sonarQube du projet : http://localhost:9000/
+```bash
+ mvn clean verify sonar:sonar \
+  -Dsonar.projectKey=isatys_BookNest_d13eaa26-39d3-4db9-b9db-72675c6e98bc \
+  -Dsonar.projectName='BookNest' \
+  -Dsonar.host.url=http://localhost:9000 \
+  -Dsonar.token=sqp_0ae585183dfeba3d62e3999b625914ab0663724c
+```
