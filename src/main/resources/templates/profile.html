@@ -93,8 +93,10 @@
             <a class="nav-link" th:href="@{/pages/profile}">Profil Utilisateur</a>
         </li>
     </ul>
-    <div class="my-2 my-lg-0">
-        <a th:href="@{/logout}" class="btn btn-danger logout-btn">Déconnexion</a>
+    <div class="navbar-search">
+        <form action="#" th:action="@{/logout}" method="post" style="display: inline;">
+            <button class="btn btn-danger" type="submit">Déconnexion</button>
+        </form>
     </div>
 </nav>
 
@@ -114,6 +116,7 @@
             <div class="profile-card">
                 <img src="https://via.placeholder.com/150" alt="Photo de Profil" />
                 <h2 th:text="${user != null ? user.username : 'Guest'}">Nom d'utilisateur</h2>
+                <p th:text="${user != null ? user.email : 'Email non disponible'}">Email</p>
                 <form th:action="@{/pages/updateProfile}" th:object="${user}" method="post">
                     <div class="form-group">
                         <label for="password">Changer le mot de passe</label>

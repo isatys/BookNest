@@ -90,9 +90,16 @@ class EmpruntServiceImplTest {
     void getAllEmprunts_ShouldReturnListOfEmpruntDTOs() {
         // Arrange
         Emprunt emprunt1 = new Emprunt();
+        emprunt1.setDateEmprunt(LocalDate.now().minusDays(1)); // Assurez-vous d'initialiser les champs nécessaires
+
         Emprunt emprunt2 = new Emprunt();
+        emprunt2.setDateEmprunt(LocalDate.now()); // Assurez-vous d'initialiser les champs nécessaires
+
         EmpruntDTO dto1 = new EmpruntDTO();
+        dto1.setDateEmprunt(emprunt1.getDateEmprunt());
+
         EmpruntDTO dto2 = new EmpruntDTO();
+        dto2.setDateEmprunt(emprunt2.getDateEmprunt());
 
         when(empruntRepository.findAll()).thenReturn(Arrays.asList(emprunt1, emprunt2));
         when(empruntMapper.toDto(emprunt1)).thenReturn(dto1);

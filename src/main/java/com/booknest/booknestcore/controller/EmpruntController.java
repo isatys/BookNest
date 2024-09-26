@@ -51,10 +51,9 @@ public class EmpruntController {
     private EmpruntRepository empruntRepository;
 
     @GetMapping("/emprunts")
-    public String getAllEmprunts( @RequestParam(value = "search", required = false) String search, Model model) {
-        List<LivreDTO> livres = livreService.getAllLivres(); // Assurez-vous que cette méthode renvoie la liste des livres
+    public String getAllEmprunts(@RequestParam(value = "search", required = false) String search, Model model) {
+        List<LivreDTO> livres = livreService.getAllLivres();
         model.addAttribute("livres", livres);
-
 
         // Récupérer le nom de l'utilisateur connecté
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -62,120 +61,129 @@ public class EmpruntController {
 
         // Récupérer l'utilisateur de la table User
         User user = userService.findByUsername(username);
-
         if (user == null) {
-            // Gestion d'erreur si l'utilisateur n'existe pas
             model.addAttribute("errorMessage", "Utilisateur non trouvé.");
-            return "error"; // Assurez-vous d'avoir une vue d'erreur
+            return "redirect:/pages/emprunts"; // Vue d'erreur
         }
+
         boolean isAdmin = auth.getAuthorities().stream()
                 .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
 
         List<EmpruntDTO> emprunts;
-
-        // Récupérer toutes les demandes d'emprunt
         List<DemandeEmpruntDTO> allDemandeEmprunts = demandeEmpruntService.getAllDemandeEmprunts();
 
         if (isAdmin) {
             model.addAttribute("demandes", allDemandeEmprunts);
-            // Si l'utilisateur est admin, obtenir tous les emprunts
             emprunts = empruntService.getAllEmprunts();
         } else {
-            // Pour les utilisateurs non administrateurs : filtrer les demandes d'emprunt par utilisateur
             List<DemandeEmpruntDTO> userDemandeEmprunts = allDemandeEmprunts.stream()
                     .filter(demande -> demande.getUtilisateur().getNom().equals(username))
                     .toList();
-            if (userDemandeEmprunts.isEmpty()) {
-                model.addAttribute("demandes", userDemandeEmprunts);
-            }
-            // Récupérer Utilisateur à partir de User
+            model.addAttribute("demandes", userDemandeEmprunts);
+
             UtilisateurDTO utilisateur = utilisateurService.getUtilisateurByNom(user.getUsername());
             if (utilisateur == null) {
                 return "userEmprunts"; // Assurez-vous d'avoir une vue appropriée pour les emprunts de l'utilisateur
             }
             Long utilisateurId = utilisateur.getId();
-
-
-            // Sinon, obtenir les emprunts de l'utilisateur spécifique
             emprunts = empruntService.getEmpruntsByUtilisateur(utilisateurId);
         }
 
-        // Si une recherche est effectuée, rediriger vers la page des livres avec le paramètre de recherche
+        // Gérer la recherche
         if (search != null && !search.isEmpty()) {
             return "redirect:/pages/livres?search=" + search;
         }
+        System.out.println("Model attributes: " + model.asMap());
 
 
         model.addAttribute("emprunts", emprunts);
-
         model.addAttribute("isAdmin", isAdmin);
-
-        // Ajouter un nouvel emprunt par défaut pour éviter l'exception
         model.addAttribute("emprunt", new EmpruntDTO());
 
-        // Ajouter les utilisateurs disponibles au modèle (si nécessaire)
         if (isAdmin) {
             List<UtilisateurDTO> utilisateurs = utilisateurService.getAllUtilisateurs();
             model.addAttribute("utilisateurs", utilisateurs);
         }
 
-        // Retourner la vue appropriée
         return isAdmin ? "adminEmprunts" : "userEmprunts";
     }
 
-
     @GetMapping("/creer")
     public String creerDemandeForm(Model model) {
-        model.addAttribute("livres", livreService.getAllLivres()); // Liste des livres pour le formulaire
-        model.addAttribute("utilisateurs", utilisateurService.getAllUtilisateurs()); // Liste des utilisateurs pour le formulaire
-        model.addAttribute("demande", new DemandeEmprunt());
-        return "userEmprunts"; // Nom du template Thymeleaf pour le formulaire
+        model.addAttribute("livres", livreService.getAllLivres());
+        model.addAttribute("utilisateurs", utilisateurService.getAllUtilisateurs());
+        return "adminEmprunts"; // Nom du template pour le formulaire
     }
 
     @PostMapping("/creer")
-    public String creerDemande(@RequestParam Long livreId, @RequestParam LocalDate dateDebut, @RequestParam LocalDate dateFin) {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        UserDetails userDetails = (UserDetails) auth.getPrincipal();
-        UtilisateurDTO utilisateur = utilisateurService.getUtilisateurByNom(userDetails.getUsername());
+    public String creerDemande(@RequestParam Long livreId, @RequestParam LocalDate dateEmprunt, @RequestParam LocalDate dateRetour,@RequestParam String utilisateurNom, Model model) {
+         UtilisateurDTO utilisateur = utilisateurService.getUtilisateurByNom(utilisateurNom);
+
+        if (utilisateur == null) {
+            model.addAttribute("errorMessage", "Utilisateur non trouvé.");
+            return "redirect:/pages/emprunts"; // Vue d'erreur
+        }
+
+        // Récupérer le livre par son titre
+        LivreDTO livre = livreService.getLivreById(livreId);
+        if (livre == null) {
+            model.addAttribute("errorMessage", "Livre non trouvé.");
+            return "redirect:/pages/emprunts"; // Vue d'erreur
+        }
+
+        // Créer un nouvel EmpruntDTO
+        EmpruntDTO nouvelEmprunt = new EmpruntDTO();
+        nouvelEmprunt.setLivre(livre); // Affecter l'objet livre à l'emprunt
+        nouvelEmprunt.setDateEmprunt(dateEmprunt);
+        nouvelEmprunt.setDateRetour(dateRetour);
+
+        UtilisateurDTO utilisateurEmprunt = new UtilisateurDTO();
+        utilisateurEmprunt.setId(utilisateur.getId()); // Utiliser l'ID de l'utilisateur récupéré
+        nouvelEmprunt.setUtilisateur(utilisateurEmprunt); // Affecter l'utilisateur
 
 
-        demandeEmpruntService.creerDemandeEmprunt(livreId, utilisateur.getNom(), dateDebut, dateFin);
+        // Appeler le service pour créer l'emprunt
+        empruntService.createEmprunt(nouvelEmprunt);// Si l'emprunt est créé avec succès, vous pouvez ajouter un message d'information ici
+        model.addAttribute("infoMessage", "Emprunt créé avec succès.");
+
+
         return "redirect:/pages/emprunts";
     }
 
     @PostMapping("/accepterDemande")
-    public String accepterDemande(@RequestParam Long demandeId) {
+    public String accepterDemande(@RequestParam Long demandeId, Model model) {
         DemandeEmprunt demande = demandeEmpruntService.findById(demandeId);
-        Livre livre = demande.getLivre();
+        if (demande == null) {
+            model.addAttribute("errorMessage", "Demande non trouvée.");
+            return "redirect:/pages/emprunts"; // Vue d'erreur
+        }
 
-        // Vérification de la disponibilité du livre
+        Livre livre = demande.getLivre();
         if (livreService.isLivreDisponible(livre.getId())) {
             demandeEmpruntService.accepterDemande(demandeId);
-
-            // Envoyer un e-mail à l'utilisateur
             userService.sendEmail(demande.getUtilisateur().getEmail(), "Demande acceptée",
                     "Votre demande pour le livre " + livre.getTitre() + " a été acceptée.");
-
-            // Supprimer la demande si elle est refusée
             demandeRepository.delete(demande);
         } else {
-            refuserDemande(demandeId);
+            refuserDemande(demandeId,model);
         }
 
         return "redirect:/pages/emprunts?info=DemandeAcceptee.";
     }
 
     @PostMapping("/refuserDemande")
-    public String refuserDemande(@RequestParam Long demandeId) {
+    public String refuserDemande(@RequestParam Long demandeId, Model model) {
         DemandeEmprunt demande = demandeEmpruntService.findById(demandeId);
-        demandeEmpruntService.refuserDemande(demandeId);
+        if (demande == null) {
+            model.addAttribute("errorMessage", "Demande non trouvée.");
+            return "redirect:/pages/emprunts"; // Vue d'erreur
+        }
 
-        // Envoyer un e-mail à l'utilisateur
+        demandeEmpruntService.refuserDemande(demandeId);
         userService.sendEmail(demande.getUtilisateur().getEmail(), "Demande refusée",
                 "Votre demande pour le livre " + demande.getLivre().getTitre() + " a été refusée car le livre n'est pas disponible.");
-
-        // Supprimer la demande si elle est refusée
         demandeRepository.delete(demande);
+
         return "redirect:/pages/emprunts?info=DemandeRefusee.";
     }
 
@@ -193,15 +201,26 @@ public class EmpruntController {
     @GetMapping("/editEmprunt/{id}")
     public String showEditForm(@PathVariable("id") Long id, Model model) {
         Emprunt emprunt = empruntService.findById(id);
+        if (emprunt == null) {
+            model.addAttribute("errorMessage", "Emprunt non trouvé.");
+            return "redirect:/pages/emprunts"; // Vue d'erreur
+        }
+
         model.addAttribute("emprunt", emprunt);
-        model.addAttribute("livres", emprunt.getLivre());
-        model.addAttribute("utilisateurs", emprunt.getUtilisateur());
-        return "editEmprunt"; // assurez-vous que c'est le bon nom de vue
+        model.addAttribute("livres", livreService.getAllLivres());
+        model.addAttribute("utilisateurs", utilisateurService.getAllUtilisateurs());
+        return "editEmprunt";
     }
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/updateEmprunt/{id}")
     public String updateEmprunt(@PathVariable Long id, @ModelAttribute("emprunt") @Valid EmpruntDTO emprunt, BindingResult bindingResult, Model model) {
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("livres", livreService.getAllLivres());
+            model.addAttribute("utilisateurs", utilisateurService.getAllUtilisateurs());
+            return "editEmprunt";
+        }
+
         if (emprunt.getDateEmprunt().isAfter(emprunt.getDateRetour())) {
             bindingResult.rejectValue("dateEmprunt", "error.emprunt", "La date d'emprunt ne peut pas être après la date de retour.");
         }
@@ -211,45 +230,12 @@ public class EmpruntController {
         }
 
         if (bindingResult.hasErrors()) {
-            List<LivreDTO> livres = livreService.getAllLivres();
-            List<UtilisateurDTO> utilisateurs = utilisateurService.getAllUtilisateurs();
-            model.addAttribute("livres", livres);
-            model.addAttribute("utilisateurs", utilisateurs);
+            model.addAttribute("livres", livreService.getAllLivres());
+            model.addAttribute("utilisateurs", utilisateurService.getAllUtilisateurs());
             return "editEmprunt";
         }
 
         empruntService.updateEmprunt(id, emprunt);
-        return "redirect:/pages/emprunts";
-    }
-
-    @PreAuthorize("hasRole('ADMIN')")
-    @PostMapping("/saveOrUpdateEmprunt")
-    public String saveOrUpdateEmprunt(@ModelAttribute("emprunt") @Valid EmpruntDTO emprunt, BindingResult bindingResult, Model model) {
-        if (emprunt.getDateEmprunt().isAfter(emprunt.getDateRetour())) {
-            bindingResult.rejectValue("dateEmprunt", "error.emprunt", "La date d'emprunt ne peut pas être après la date de retour.");
-        }
-
-        if (emprunt.getUtilisateur() == null || emprunt.getUtilisateur().getId() == null) {
-            bindingResult.rejectValue("utilisateur", "error.emprunt", "L'utilisateur doit être sélectionné.");
-        }
-
-        if (bindingResult.hasErrors()) {
-            List<LivreDTO> livres = livreService.getAllLivres();
-            List<UtilisateurDTO> utilisateurs = utilisateurService.getAllUtilisateurs();
-            model.addAttribute("livres", livres);
-            model.addAttribute("utilisateurs", utilisateurs);
-            return "editEmprunt";
-        }
-
-        // Différencier entre la création et la mise à jour
-        if (emprunt.getId() == null || emprunt.getId() == 0) {
-            // Création
-            empruntService.createEmprunt(emprunt);
-        } else {
-            // Mise à jour
-            empruntService.updateEmprunt(emprunt.getId(), emprunt);
-        }
-
         return "redirect:/pages/emprunts";
     }
 }

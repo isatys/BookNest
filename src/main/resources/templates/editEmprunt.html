@@ -49,7 +49,11 @@
                    aria-describedby="basic-addon2" th:value="${param.search}">
             <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
         </form>
-        <a th:href="@{/logout}" class="btn btn-danger logout-btn">Déconnexion</a>
+        <div class="navbar-search">
+            <form action="#" th:action="@{/logout}" method="post" style="display: inline;">
+                <button class="btn btn-danger" type="submit">Déconnexion</button>
+            </form>
+        </div>
     </div>
 </nav>
 

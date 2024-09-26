@@ -67,6 +67,17 @@ public class AuteurController {
         return "redirect:/pages/auteurs";
     }
 
+    @GetMapping("/createAuthor")
+    public String showCreateForm(Model model) {
+        if (!checkIfUserIsAdmin()) {
+            return "redirect:/pages/auteurs"; // Redirige vers la liste des auteurs si non-admin
+        }
+
+        model.addAttribute("newAuteur", new AuteurDTO());
+        return "createAuteur"; // Nom de la vue Thymeleaf pour le formulaire de création
+    }
+
+
     @GetMapping("/deleteAuthor/{id}")
     public String deleteAuteur(@PathVariable Long id) {
         if (!checkIfUserIsAdmin()) {

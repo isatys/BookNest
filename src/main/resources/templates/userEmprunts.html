@@ -14,9 +14,6 @@
         .navbar {
             margin-bottom: 20px;
         }
-        .navbar-nav .nav-item {
-            margin-right: 10px;
-        }
         .container {
             max-width: 900px;
             margin: auto;
@@ -50,8 +47,16 @@
             align-items: center;
             gap: 10px;
         }
-        .book-actions form {
-            display: inline;
+        .list-group-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .list-group-item h5 {
+            margin: 0;
+        }
+        .search-bar {
+            margin-right: 10px;
         }
     </style>
 </head>
@@ -89,11 +94,15 @@
     </ul>
     <div class="navbar-search d-flex align-items-center">
         <!-- Barre de recherche -->
-        <form th:action="@{/pages/emprunts}" method="get" class="form-inline">
+        <form th:action="@{/pages/emprunts}" method="get" class="form-inline search-bar">
             <input type="text" name="search" class="form-control mr-2" placeholder="Rechercher des livres..." th:value="${param.search}">
             <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
         </form>
-        <a th:href="@{/logout}" class="btn btn-danger ml-2">Déconnexion</a>
+        <div class="navbar-search">
+            <form action="#" th:action="@{/logout}" method="post" style="display: inline;">
+                <button class="btn btn-danger" type="submit">Déconnexion</button>
+            </form>
+        </div>
     </div>
 </nav>
 
@@ -103,10 +112,11 @@
     <div class="page-header text-center">
         <h2>Faire une Demande d'Emprunt</h2>
     </div>
-    <form th:action="@{/pages/creer}" method="post">
+    <form th:action="@{/pages/creer}" method="post" class="mb-4">
         <div class="form-group">
             <label for="livre">Livre</label>
             <select id="livre" name="livreId" class="form-control" required>
+                <option value="" disabled selected>Sélectionner un livre</option>
                 <option th:each="livre : ${livres}" th:value="${livre.id}" th:text="${livre.titre}"></option>
             </select>
         </div>
@@ -127,18 +137,18 @@
     </div>
     <div th:if="${demandes != null && !demandes.isEmpty()}">
         <div class="list-group">
-            <div th:each="demande : ${demandes}" class="list-group-item list-group-item-action">
-                <div class="d-flex w-100 justify-content-between">
+            <div th:each="demande : ${demandes}" class="list-group-item">
+                <div>
                     <h5 class="mb-1" th:text="${demande.livre.titre}">Titre du Livre</h5>
-                    <small th:text="${demande.dateEmprunt}">Date d'emprunt</small>
+                    <p class="mb-1">Date de Retour: <span th:text="${demande.dateRetour}">Date de retour</span></p>
+                    <p class="mb-1">Statut: <span th:text="${demande.statut}">Statut de la Demande</span></p>
                 </div>
-                <p class="mb-1">Date de Retour: <span th:text="${demande.dateRetour}">Date de fin</span></p>
-                <p class="mb-1">Statut: <span th:text="${demande.statut}">Statut de la Demande</span></p>
+                <small th:text="${demande.dateEmprunt}">Date d'emprunt</small>
             </div>
         </div>
     </div>
-    <div th:if="${demande == null || demande.isEmpty()}" class="alert alert-info mt-3">
-        <p>Aucun emprunt trouvé.</p>
+    <div th:if="${demandes == null || demandes.isEmpty()}" class="alert alert-info mt-3">
+        <p>Aucune demande d'emprunt trouvée.</p>
     </div>
 
     <!-- Liste des Emprunts -->
@@ -147,15 +157,14 @@
     </div>
     <div th:if="${emprunts != null && !emprunts.isEmpty()}">
         <div class="list-group">
-            <div th:each="emprunt : ${emprunts}" class="list-group-item list-group-item-action">
-                <div class="d-flex w-100 justify-content-between">
+            <div th:each="emprunt : ${emprunts}" class="list-group-item">
+                <div>
                     <h5 class="mb-1" th:if="${emprunt.livre != null}" th:text="${emprunt.livre.titre}">
                         Titre du Livre</h5>
                     <h5 class="mb-1" th:if="${emprunt.livre == null}">Livre non disponible</h5>
-
-                    <small th:text="${emprunt.dateEmprunt}">Date d'emprunt</small>
+                    <p class="mb-1">Date de Retour: <span th:text="${emprunt.dateRetour}">Date de retour</span></p>
                 </div>
-                <p class="mb-1">Date de Retour: <span th:text="${emprunt.dateRetour}">Date de retour</span></p>
+                <small th:text="${emprunt.dateEmprunt}">Date d'emprunt</small>
             </div>
         </div>
     </div>

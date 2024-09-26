@@ -11,6 +11,7 @@ import com.booknest.booknestcore.service.EmpruntService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -52,6 +53,7 @@ public class EmpruntServiceImpl implements EmpruntService {
     public List<EmpruntDTO> getAllEmprunts() {
         return empruntRepository.findAll().stream()
                 .map(empruntMapper::toDto)
+                .sorted(Comparator.comparing(EmpruntDTO::getDateEmprunt))
                 .collect(Collectors.toList());
     }
 

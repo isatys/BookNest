@@ -109,7 +109,11 @@
                    aria-describedby="basic-addon2" th:value="${param.search}">
             <button class="btn btn-outline-secondary" type="submit"><i class="fas fa-search"></i></button>
         </form>
-        <a th:href="@{/logout}" class="btn btn-danger ml-2">Déconnexion</a>
+        <div class="navbar-search">
+            <form action="#" th:action="@{/logout}" method="post" style="display: inline;">
+                <button class="btn btn-danger" type="submit">Déconnexion</button>
+            </form>
+        </div>
     </div>
 </nav>
 
@@ -188,29 +192,29 @@
         </div>
 
         <!-- Formulaire d'édition/création d'emprunt -->
-        <form th:action="@{/pages/saveOrUpdateEmprunt}" th:object="${emprunt}" method="post" class="mt-3" onsubmit="return validateDates()">
+        <form action="#"  th:action="@{/pages/creer}" th:object="${emprunt}" method="post" class="mt-3" onsubmit="return validateDates()">
             <!-- Champ caché pour l'ID -->
             <input type="hidden" th:field="*{id}"/>
             <div class="form-group">
-                <label for="dateEmprunt">Date d'Emprunt</label>
+                <label for="dateEmprunt">Date de Début</label>
                 <input type="date" class="form-control" id="dateEmprunt" th:field="*{dateEmprunt}" required>
             </div>
             <div class="form-group">
-                <label for="dateRetour">Date de Retour</label>
-                <input type="date" class="form-control" id="dateRetour" th:field="*{dateRetour}" required>
+                <label for="dateRetour">Date de Fin</label>
+                <input type="date" id="dateRetour" name="dateRetour" class="form-control" required>
             </div>
             <div class="form-group">
-                <label for="livre">Livre</label>
-                <select id="livre" th:field="*{livre.id}" class="form-control">
+                <label for="livreId">Livre</label>
+                <select id="livreId" name="livreId" class="form-control" required>
                     <option th:each="livre : ${livres}" th:value="${livre.id}" th:text="${livre.titre}"></option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="utilisateur">Utilisateur</label>
-                <select id="utilisateur" th:field="*{utilisateur.id}" class="form-control">
+                <select id="utilisateur" name="utilisateurNom" class="form-control">
                     <option value="" th:text="'Sélectionnez un utilisateur'">Sélectionnez un utilisateur</option>
-                    <option th:each="utilisateur : ${utilisateurs}" th:value="${utilisateur.id}" th:text="${utilisateur.nom}"></option>
+                    <option th:each="utilisateur : ${utilisateurs}" th:value="${utilisateur.nom}" th:text="${utilisateur.nom}"></option>
                 </select>
                 <div class="text-danger" th:if="${#fields.hasErrors('utilisateur')}" th:errors="*{utilisateur}"></div>
             </div>

@@ -2,6 +2,7 @@ package com.booknest.booknestcore.service.impl;
 
 import com.booknest.booknestcore.Enum.StatutDemande;
 import com.booknest.booknestcore.dto.DemandeEmpruntDTO;
+import com.booknest.booknestcore.dto.EmpruntDTO;
 import com.booknest.booknestcore.dto.LivreDTO;
 import com.booknest.booknestcore.dto.UtilisateurDTO;
 import com.booknest.booknestcore.mapper.DemandeEmpruntMapper;
@@ -19,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -56,7 +58,10 @@ public class DemandeEmpruntServiceImpl implements DemandeEmpruntService {
     @Override
     public List<DemandeEmpruntDTO> getAllDemandeEmprunts(){
         List<DemandeEmprunt> emprunts = demandeEmpruntRepository.findAll();
-        return emprunts.stream().map(DemandeEmpruntMapper.INSTANCE::toDto).collect(Collectors.toList());
+        return emprunts.stream()
+                .map(DemandeEmpruntMapper.INSTANCE::toDto)
+                .sorted(Comparator.comparing(DemandeEmpruntDTO::getDateEmprunt))
+                .collect(Collectors.toList());
 
     }
 

@@ -102,7 +102,11 @@
                    th:value="${param.authorFilter}" type="text">
             <button class="btn btn-outline-secondary" type="submit">Filtrer</button>
         </form>
-        <a class="btn btn-danger ml-2" th:href="@{/logout}">Déconnexion</a>
+        <div class="navbar-search">
+            <form action="#" th:action="@{/logout}" method="post" style="display: inline;">
+                <button class="btn btn-danger" type="submit">Déconnexion</button>
+            </form>
+        </div>
     </div>
 </nav>
 
@@ -144,7 +148,7 @@
     <!-- Bouton Ajouter un Auteur (réservé aux administrateurs) -->
     <div th:if="${isAdmin}">
         <h2 class="mt-4">Ajouter un Auteur</h2>
-        <form action="/pages/createAuthor" method="post" th:object="${newAuteur}" class="mt-3">
+        <form action="#" th:action="@{/pages/createAuthor}" method="post" th:object="${newAuteur}">
             <div class="form-group">
                 <label for="nom">Nom</label>
                 <input type="text" class="form-control" id="nom" th:field="*{nom}" required>

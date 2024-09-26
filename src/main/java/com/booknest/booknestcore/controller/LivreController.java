@@ -73,6 +73,8 @@ public class LivreController {
             if (principal instanceof UserDetails userDetails) {
                 isAdmin = userDetails.getAuthorities().stream()
                         .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
+                // Ajout de log pour vérifier les autorités de l'utilisateur
+                System.out.println("Authorities: " + userDetails.getAuthorities());
             }
         }
         model.addAttribute("isAdmin", isAdmin);
@@ -94,6 +96,29 @@ public class LivreController {
         livreService.createLivre(livreDTO);
         return "redirect:/pages/livres"; // Rediriger vers la liste des livres après l'ajout
     }
+
+    @GetMapping("/createLivre")
+    public String showCreateForm(Model model) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null || !auth.getAuthorities().stream()
+                .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
+            return "redirect:/pages/livres"; // Redirige vers la liste des livres si non-admin
+        }
+
+        // Créer un nouvel objet LivreDTO
+        LivreDTO newLivre = new LivreDTO();
+        model.addAttribute("newLivre", newLivre);
+
+        // Charger la liste des auteurs et genres
+        List<Auteur> auteurs = auteurRepository.findAll();
+        model.addAttribute("auteurs", auteurs);
+
+        List<String> genres = livreService.getDistinctGenres();
+        model.addAttribute("genres", genres);
+
+        return "createLivre"; // Nom de la vue Thymeleaf pour le formulaire de création
+    }
+
 
     @GetMapping("/deleteBook/{id}")
     public String deleteBook(@PathVariable Long id, Model model) {
