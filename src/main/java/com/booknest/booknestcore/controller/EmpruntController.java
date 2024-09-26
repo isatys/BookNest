@@ -237,7 +237,7 @@ public class EmpruntController {
         if (livreService.isLivreDisponible(livre.getId())) {
             demandeEmpruntService.accepterDemande(demandeId);
             userService.sendEmail(demande.getUtilisateur().getEmail(), "Demande acceptée",
-                    "Votre demande pour le livre " + livre.getTitre() + " a été acceptée.");
+                    "Votre demande pour le livre " + livre.getTitre() + " a été acceptée. Date de retour : " + demande.getDateRetour());
             demandeRepository.delete(demande);
         } else {
             refuserDemande(demandeId,model);
