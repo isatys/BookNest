@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface DemandeEmpruntService {
 
-    void creerDemandeEmprunt(Long livreId, String nom,LocalDate dateEmprunt, LocalDate dateRetour);
+    void creerDemandeEmprunt(DemandeEmpruntDTO demandeEmpruntDTO);
 
     List<DemandeEmprunt> getDemandesEnAttente();
 

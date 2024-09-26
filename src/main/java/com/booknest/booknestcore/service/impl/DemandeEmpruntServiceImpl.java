@@ -46,6 +46,9 @@ public class DemandeEmpruntServiceImpl implements DemandeEmpruntService {
     @Autowired
     private EmpruntMapper empruntMapper;
 
+    @Autowired
+    private DemandeEmpruntMapper demandeEmruntMapper;
+
 
 
 
@@ -66,19 +69,9 @@ public class DemandeEmpruntServiceImpl implements DemandeEmpruntService {
     }
 
     @Override
-    public void creerDemandeEmprunt(Long livreId, String nom, LocalDate dateEmprunt, LocalDate dateRetour) {
-        DemandeEmprunt demande = new DemandeEmprunt();
+    public void creerDemandeEmprunt(DemandeEmpruntDTO demandeEmpruntDTO) {
 
-        // Récupérez les objets Livre et Utilisateur depuis les services ou repositories
-        LivreDTO livre = livreService.getLivreById(livreId);
-        UtilisateurDTO utilisateur = utilisateurService.getUtilisateurByNom(nom);
-
-        demande.setLivre(empruntMapper.mapLivreFromId(livre.getId()));
-        demande.setUtilisateur(empruntMapper.mapUtilisateurFromId(utilisateur.getId()));
-        demande.setDateEmprunt(dateEmprunt);
-        demande.setDateRetour(dateRetour);
-        // Set the initial status for the demand
-        demande.setStatut(StatutDemande.EN_ATTENTE);
+        DemandeEmprunt demande = demandeEmruntMapper.toEntity(demandeEmpruntDTO);
 
         demandeEmpruntRepository.save(demande);
     }

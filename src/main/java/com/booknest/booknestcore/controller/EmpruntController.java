@@ -1,15 +1,14 @@
 package com.booknest.booknestcore.controller;
 
+import com.booknest.booknestcore.Enum.StatutDemande;
 import com.booknest.booknestcore.dto.DemandeEmpruntDTO;
 import com.booknest.booknestcore.dto.EmpruntDTO;
 import com.booknest.booknestcore.dto.LivreDTO;
 import com.booknest.booknestcore.dto.UtilisateurDTO;
-import com.booknest.booknestcore.model.DemandeEmprunt;
-import com.booknest.booknestcore.model.Emprunt;
-import com.booknest.booknestcore.model.Livre;
-import com.booknest.booknestcore.model.User;
+import com.booknest.booknestcore.model.*;
 import com.booknest.booknestcore.repository.DemandeEmpruntRepository;
 import com.booknest.booknestcore.repository.EmpruntRepository;
+import com.booknest.booknestcore.repository.LivreRepository;
 import com.booknest.booknestcore.service.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -49,9 +49,19 @@ public class EmpruntController {
 
     @Autowired
     private EmpruntRepository empruntRepository;
+    @Autowired
+    private LivreRepository livreRepository;
 
     @GetMapping("/emprunts")
-    public String getAllEmprunts(@RequestParam(value = "search", required = false) String search, Model model) {
+    public String getAllEmprunts(@RequestParam(value = "search", required = false) String search, Model model,RedirectAttributes redirectAttributes) {
+        // Vérifiez si des messages d'erreur ou d'information sont disponibles
+        if (redirectAttributes.getFlashAttributes().containsKey("errorMessage")) {
+            model.addAttribute("errorMessage", redirectAttributes.getFlashAttributes().get("errorMessage"));
+        }
+        if (redirectAttributes.getFlashAttributes().containsKey("infoMessage")) {
+            model.addAttribute("infoMessage", redirectAttributes.getFlashAttributes().get("infoMessage"));
+        }
+
         List<LivreDTO> livres = livreService.getAllLivres();
         model.addAttribute("livres", livres);
 
@@ -109,15 +119,77 @@ public class EmpruntController {
     }
 
     @GetMapping("/creer")
-    public String creerDemandeForm(Model model) {
+    public String creerEmpruntForm(Model model) {
         model.addAttribute("livres", livreService.getAllLivres());
         model.addAttribute("utilisateurs", utilisateurService.getAllUtilisateurs());
         return "adminEmprunts"; // Nom du template pour le formulaire
     }
 
     @PostMapping("/creer")
-    public String creerDemande(@RequestParam Long livreId, @RequestParam LocalDate dateEmprunt, @RequestParam LocalDate dateRetour,@RequestParam String utilisateurNom, Model model) {
-         UtilisateurDTO utilisateur = utilisateurService.getUtilisateurByNom(utilisateurNom);
+    public String creerEmprunt(@RequestParam Long livreId,
+                               @RequestParam LocalDate dateEmprunt,
+                               @RequestParam LocalDate dateRetour,
+                               @RequestParam String utilisateurNom,
+                               RedirectAttributes redirectAttributes) {
+        UtilisateurDTO utilisateur = utilisateurService.getUtilisateurByNom(utilisateurNom);
+        LocalDate aujourdHui = LocalDate.now();
+
+        // Vérifier si la date d'emprunt est dans le passé
+        if (dateEmprunt.isBefore(aujourdHui)) {
+            redirectAttributes.addFlashAttribute("errorMessage", "La date d'emprunt ne peut pas être dans le passé.");
+            return "redirect:/pages/emprunts"; // Vue d'erreur
+        }
+
+        if (utilisateur == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Utilisateur non trouvé.");
+            return "redirect:/pages/emprunts"; // Vue d'erreur
+        }
+
+        // Récupérer le livre par son ID
+        LivreDTO livre = livreService.getLivreById(livreId);
+        if (livre == null) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Livre non trouvé.");
+            return "redirect:/pages/emprunts"; // Vue d'erreur
+        }
+
+        // Créer un nouvel EmpruntDTO
+        EmpruntDTO nouvelEmprunt = new EmpruntDTO();
+        nouvelEmprunt.setLivre(livre);
+        nouvelEmprunt.setDateEmprunt(dateEmprunt);
+        nouvelEmprunt.setDateRetour(dateRetour);
+
+        UtilisateurDTO utilisateurEmprunt = new UtilisateurDTO();
+        utilisateurEmprunt.setId(utilisateur.getId());
+        nouvelEmprunt.setUtilisateur(utilisateurEmprunt);
+
+        // Appeler le service pour créer l'emprunt
+        empruntService.createEmprunt(nouvelEmprunt);
+        redirectAttributes.addFlashAttribute("infoMessage", "Emprunt créé avec succès.");
+
+        return "redirect:/pages/emprunts";
+    }
+
+
+
+    @GetMapping("/creerDemande")
+    public String creerDemandeEmpruntForm(Model model) {
+        model.addAttribute("livres", livreService.getAllLivres());
+        return "userEmprunts"; // Nom du template pour le formulaire
+    }
+
+    @PostMapping("/creerDemande")
+    public String creerDemande(@RequestParam Long livreId, @RequestParam LocalDate dateEmprunt, @RequestParam LocalDate dateRetour, Model model) {
+        // Récupérer le nom de l'utilisateur connecté
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        String username = auth.getName();
+// Vérifier si la date d'emprunt est dans le passé
+        LocalDate aujourdHui = LocalDate.now();
+        if (dateEmprunt.isBefore(aujourdHui) && dateRetour.isBefore(aujourdHui)) {
+            model.addAttribute("errorMessage", "La date d'emprunt et de retour ne peut pas être dans le passé.");
+            return "redirect:/pages/emprunts"; // Vue d'erreur
+        }
+
+        UtilisateurDTO utilisateur = utilisateurService.getUtilisateurByNom(username);
 
         if (utilisateur == null) {
             model.addAttribute("errorMessage", "Utilisateur non trouvé.");
@@ -125,25 +197,28 @@ public class EmpruntController {
         }
 
         // Récupérer le livre par son titre
-        LivreDTO livre = livreService.getLivreById(livreId);
+        Livre livre = livreRepository.getById(livreId);
         if (livre == null) {
             model.addAttribute("errorMessage", "Livre non trouvé.");
             return "redirect:/pages/emprunts"; // Vue d'erreur
         }
 
         // Créer un nouvel EmpruntDTO
-        EmpruntDTO nouvelEmprunt = new EmpruntDTO();
-        nouvelEmprunt.setLivre(livre); // Affecter l'objet livre à l'emprunt
-        nouvelEmprunt.setDateEmprunt(dateEmprunt);
-        nouvelEmprunt.setDateRetour(dateRetour);
+        DemandeEmpruntDTO nouvelleDemande = new DemandeEmpruntDTO();
+        nouvelleDemande.setLivre(livre); // Affecter l'objet livre à l'emprunt
+        nouvelleDemande.setDateEmprunt(dateEmprunt);
+        nouvelleDemande.setDateRetour(dateRetour);
 
-        UtilisateurDTO utilisateurEmprunt = new UtilisateurDTO();
+        // Initialiser le statut (par exemple, à EN_ATTENTE)
+        nouvelleDemande.setStatut(StatutDemande.EN_ATTENTE);
+
+        Utilisateur utilisateurEmprunt = new Utilisateur();
         utilisateurEmprunt.setId(utilisateur.getId()); // Utiliser l'ID de l'utilisateur récupéré
-        nouvelEmprunt.setUtilisateur(utilisateurEmprunt); // Affecter l'utilisateur
+        nouvelleDemande.setUtilisateur(utilisateurEmprunt); // Affecter l'utilisateur
 
 
         // Appeler le service pour créer l'emprunt
-        empruntService.createEmprunt(nouvelEmprunt);// Si l'emprunt est créé avec succès, vous pouvez ajouter un message d'information ici
+        demandeEmpruntService.creerDemandeEmprunt(nouvelleDemande);// Si l'emprunt est créé avec succès, vous pouvez ajouter un message d'information ici
         model.addAttribute("infoMessage", "Emprunt créé avec succès.");
 
 

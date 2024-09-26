@@ -112,7 +112,7 @@
     <div class="page-header text-center">
         <h2>Faire une Demande d'Emprunt</h2>
     </div>
-    <form th:action="@{/pages/creer}" method="post" class="mb-4">
+    <form th:action="@{/pages/creerDemande}" method="post" class="mb-4">
         <div class="form-group">
             <label for="livre">Livre</label>
             <select id="livre" name="livreId" class="form-control" required>
@@ -121,12 +121,12 @@
             </select>
         </div>
         <div class="form-group">
-            <label for="dateDebut">Date de début</label>
-            <input type="date" id="dateDebut" name="dateDebut" class="form-control" required>
+            <label for="dateEmprunt">Date de début</label>
+            <input type="date" id="dateEmprunt" name="dateEmprunt" class="form-control" required>
         </div>
         <div class="form-group">
-            <label for="dateFin">Date de fin</label>
-            <input type="date" id="dateFin" name="dateFin" class="form-control" required>
+            <label for="dateRetour">Date de fin</label>
+            <input type="date" id="dateRetour" name="dateRetour" class="form-control" required>
         </div>
         <button type="submit" class="btn btn-primary">Faire une Demande</button>
     </form>

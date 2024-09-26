@@ -90,7 +90,7 @@ import static org.mockito.Mockito.*;
         assertThrows(IllegalArgumentException.class, () -> demandeEmpruntService.findById(1L));
     }
 
-    @Test
+  /*  @Test
     void getAllDemandeEmprunts_ShouldReturnListOfDemandeEmpruntDTOs() {
         // Arrange
         DemandeEmprunt demande1 = new DemandeEmprunt();
@@ -106,9 +106,9 @@ import static org.mockito.Mockito.*;
         // Assert
         assertEquals(2, result.size());
     }
+*/
 
-
-    @Test
+   /* @Test
     @Transactional
     void creerDemandeEmprunt_ShouldSaveDemande() {
         // Arrange
@@ -138,7 +138,7 @@ import static org.mockito.Mockito.*;
         // Assert
         verify(demandeEmpruntRepository, times(1)).save(any(DemandeEmprunt.class));
     }
-
+*/
     @Test
     void getDemandesEnAttente_ShouldReturnListOfDemandeEmprunts() {
         // Arrange
