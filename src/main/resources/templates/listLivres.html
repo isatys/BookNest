@@ -259,7 +259,7 @@
     <!-- Bouton Ajouter un Livre (réservé aux administrateurs) -->
     <div th:if="${isAdmin}">
         <h2 class="mt-4">Ajouter un Livre</h2>
-        <form action="#" th:action="@{/pages/creer}" method="post" th:object="${newLivre}">
+        <form action="#" th:action="@{/pages/createLivre}" method="post" th:object="${newLivre}">
         <div class="form-group">
                 <label for="titre">Titre</label>
                 <input class="form-control" id="titre" required th:field="*{titre}" type="text">
