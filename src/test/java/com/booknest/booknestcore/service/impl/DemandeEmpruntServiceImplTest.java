@@ -90,55 +90,6 @@ import static org.mockito.Mockito.*;
         assertThrows(IllegalArgumentException.class, () -> demandeEmpruntService.findById(1L));
     }
 
-  /*  @Test
-    void getAllDemandeEmprunts_ShouldReturnListOfDemandeEmpruntDTOs() {
-        // Arrange
-        DemandeEmprunt demande1 = new DemandeEmprunt();
-        DemandeEmprunt demande2 = new DemandeEmprunt();
-        DemandeEmpruntDTO dto1 = new DemandeEmpruntDTO();
-        dto1.setStatut(StatutDemande.EN_ATTENTE);
-
-        when(demandeEmpruntRepository.findAll()).thenReturn(Arrays.asList(demande1, demande2));
-
-        // Act
-        List<DemandeEmpruntDTO> result = demandeEmpruntService.getAllDemandeEmprunts();
-
-        // Assert
-        assertEquals(2, result.size());
-    }
-*/
-
-   /* @Test
-    @Transactional
-    void creerDemandeEmprunt_ShouldSaveDemande() {
-        // Arrange
-        Long livreId = 1L;
-        String nom = "John Doe";
-        LocalDate dateEmprunt = LocalDate.now();
-        LocalDate dateRetour = LocalDate.now().plusDays(10);
-
-        LivreDTO livreDTO = new LivreDTO();
-        livreDTO.setId(livreId);
-        UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
-        utilisateurDTO.setId(1L);
-
-        Livre livre = new Livre();
-        livre.setId(livreId);
-        Utilisateur utilisateur = new Utilisateur();
-        utilisateur.setId(1L);
-
-        when(livreService.getLivreById(livreId)).thenReturn(livreDTO);
-        when(utilisateurService.getUtilisateurByNom(nom)).thenReturn(utilisateurDTO);
-        when(empruntMapper.mapLivreFromId(livreId)).thenReturn(livre);
-        when(empruntMapper.mapUtilisateurFromId(utilisateurDTO.getId())).thenReturn(utilisateur);
-
-        // Act
-        demandeEmpruntService.creerDemandeEmprunt(livreId, nom, dateEmprunt, dateRetour);
-
-        // Assert
-        verify(demandeEmpruntRepository, times(1)).save(any(DemandeEmprunt.class));
-    }
-*/
     @Test
     void getDemandesEnAttente_ShouldReturnListOfDemandeEmprunts() {
         // Arrange
