@@ -34,18 +34,9 @@ public class LivreController {
     private AuteurRepository auteurRepository;
 
     @Operation(summary = "Récupérer tous les livres")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Livres récupérés avec succès"),
-            @ApiResponse(responseCode = "404", description = "Aucun livre trouvé")
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Livres récupérés avec succès"), @ApiResponse(responseCode = "404", description = "Aucun livre trouvé")})
     @GetMapping("/livres")
-    public String getAllLivres(
-            @RequestParam(value = "sort", required = false) String sort,
-            @RequestParam(value = "genre", required = false) String genre,
-            @RequestParam(value = "search", required = false) String search,
-            @RequestParam(value = "page", defaultValue = "0") int page,
-            @RequestParam(value = "size", defaultValue = "6") int size,
-            Model model) {
+    public String getAllLivres(@RequestParam(value = "sort", required = false) String sort, @RequestParam(value = "genre", required = false) String genre, @RequestParam(value = "search", required = false) String search, @RequestParam(value = "page", defaultValue = "0") int page, @RequestParam(value = "size", defaultValue = "6") int size, Model model) {
 
         List<LivreDTO> livres;
 
@@ -79,8 +70,7 @@ public class LivreController {
         if (auth != null) {
             Object principal = auth.getPrincipal();
             if (principal instanceof UserDetails userDetails) {
-                isAdmin = userDetails.getAuthorities().stream()
-                        .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
+                isAdmin = userDetails.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
                 // Ajout de log pour vérifier les autorités de l'utilisateur
                 System.out.println("Authorities: " + userDetails.getAuthorities());
             }
@@ -93,16 +83,11 @@ public class LivreController {
 
 
     @Operation(summary = "Créer un nouveau livre")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Livre créé avec succès"),
-            @ApiResponse(responseCode = "400", description = "Requête invalide")
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "201", description = "Livre créé avec succès"), @ApiResponse(responseCode = "400", description = "Requête invalide")})
     @PostMapping("/createLivre")
-    public String createLivre(
-            @Parameter(description = "Détails du livre à créer", required = true) @Valid @ModelAttribute LivreDTO livreDTO) {
+    public String createLivre(@Parameter(description = "Détails du livre à créer", required = true) @Valid @ModelAttribute LivreDTO livreDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.getAuthorities().stream()
-                .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
+        if (auth == null || !auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
             return "redirect:/pages/livres"; // Redirige vers la liste des livres si non-admin
         }
         livreService.createLivre(livreDTO);
@@ -112,8 +97,7 @@ public class LivreController {
     @GetMapping("/createLivre")
     public String showCreateForm(Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.getAuthorities().stream()
-                .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
+        if (auth == null || !auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
             return "redirect:/pages/livres"; // Redirige vers la liste des livres si non-admin
         }
 
@@ -132,15 +116,11 @@ public class LivreController {
     }
 
     @Operation(summary = "Supprimer un livre par ID")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Livre supprimé avec succès"),
-            @ApiResponse(responseCode = "404", description = "Livre non trouvé")
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Livre supprimé avec succès"), @ApiResponse(responseCode = "404", description = "Livre non trouvé")})
     @GetMapping("/deleteBook/{id}")
     public String deleteBook(@PathVariable Long id, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.getAuthorities().stream()
-                .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
+        if (auth == null || !auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
             return "redirect:/pages/livres"; // Redirige vers la liste des livres si non-admin
         }
         livreService.deleteLivre(id);
@@ -150,8 +130,7 @@ public class LivreController {
     @GetMapping("/editBook/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.getAuthorities().stream()
-                .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
+        if (auth == null || !auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
             return "redirect:/pages/livres"; // Redirige vers la liste des livres si non-admin
         }
         LivreDTO livreDTO = livreService.getLivreById(id);
@@ -163,17 +142,11 @@ public class LivreController {
     }
 
     @Operation(summary = "Met à jour un livre existant")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Livre mis à jour avec succès"),
-            @ApiResponse(responseCode = "400", description = "Requête invalide"),
-            @ApiResponse(responseCode = "404", description = "Livre non trouvé"),
-            @ApiResponse(responseCode = "403", description = "Accès refusé pour les utilisateurs non-admin")
-    })
+    @ApiResponses(value = {@ApiResponse(responseCode = "200", description = "Livre mis à jour avec succès"), @ApiResponse(responseCode = "400", description = "Requête invalide"), @ApiResponse(responseCode = "404", description = "Livre non trouvé"), @ApiResponse(responseCode = "403", description = "Accès refusé pour les utilisateurs non-admin")})
     @PostMapping("/updateBook/{id}")
     public String updateBook(@PathVariable Long id, @ModelAttribute LivreDTO livreDTO) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth == null || !auth.getAuthorities().stream()
-                .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
+        if (auth == null || !auth.getAuthorities().stream().anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"))) {
             return "redirect:/pages/livres"; // Redirige vers la liste des livres si non-admin
         }
         livreService.updateLivre(id, livreDTO);
