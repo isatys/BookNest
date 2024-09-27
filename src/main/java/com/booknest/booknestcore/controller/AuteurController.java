@@ -4,8 +4,12 @@ import com.booknest.booknestcore.dto.AuteurDTO;
 import com.booknest.booknestcore.mapper.AuteurMapper;
 import com.booknest.booknestcore.repository.AuteurRepository;
 import com.booknest.booknestcore.service.AuteurService;
+import com.booknest.booknestcore.service.AuthService;
 import com.booknest.booknestcore.service.LivreService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -29,8 +33,15 @@ public class AuteurController {
     private AuteurMapper auteurMapper;
     @Autowired
     private LivreService livreService;
+    @Autowired
+    private AuthService authService;
 
     @GetMapping("/auteurs")
+    @Operation(summary = "Récupère tous les auteurs", description = "Renvoie une liste de tous les auteurs, avec filtrage optionnel.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Liste des auteurs récupérée avec succès"),
+            @ApiResponse(responseCode = "404", description = "Aucun auteur trouvé")
+    })
     public String getAllAuteurs( @RequestParam(value = "search", required = false) String search,
                                  @RequestParam(value = "authorFilter", required = false) String authorFilter,Model model) {
         List<AuteurDTO> auteurs = auteurService.getAllAuthors();
@@ -47,7 +58,7 @@ public class AuteurController {
 
         model.addAttribute("auteurs", auteurs);
 
-        boolean isAdmin = checkIfUserIsAdmin();
+        boolean isAdmin = authService.checkIfUserIsAdmin();
 
 
 
@@ -58,9 +69,15 @@ public class AuteurController {
     }
 
     @PostMapping("/createAuthor")
+    @Operation(summary = "Crée un nouvel auteur", description = "Crée un auteur avec les détails fournis.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "302", description = "Auteur créé avec succès, redirection vers la liste des auteurs"),
+            @ApiResponse(responseCode = "403", description = "Accès refusé, l'utilisateur n'est pas administrateur"),
+            @ApiResponse(responseCode = "400", description = "Données invalides pour l'auteur")
+    })
     public String createAuteur(
             @Parameter(description = "Détails de l'auteur à créer", required = true) @Valid @ModelAttribute AuteurDTO auteurDTO) {
-        if (!checkIfUserIsAdmin()) {
+        if (!authService.checkIfUserIsAdmin()) {
             return "redirect:/pages/auteurs"; // Redirect if the user is not an admin
         }
         auteurService.createAuthor(auteurDTO);
@@ -69,7 +86,7 @@ public class AuteurController {
 
     @GetMapping("/createAuthor")
     public String showCreateForm(Model model) {
-        if (!checkIfUserIsAdmin()) {
+        if (!authService.checkIfUserIsAdmin()) {
             return "redirect:/pages/auteurs"; // Redirige vers la liste des auteurs si non-admin
         }
 
@@ -79,8 +96,14 @@ public class AuteurController {
 
 
     @GetMapping("/deleteAuthor/{id}")
+    @Operation(summary = "Supprime un auteur", description = "Supprime l'auteur spécifié par son identifiant.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "302", description = "Auteur supprimé avec succès, redirection vers la liste des auteurs"),
+            @ApiResponse(responseCode = "403", description = "Accès refusé, l'utilisateur n'est pas administrateur"),
+            @ApiResponse(responseCode = "404", description = "Auteur non trouvé")
+    })
     public String deleteAuteur(@PathVariable Long id) {
-        if (!checkIfUserIsAdmin()) {
+        if (!authService.checkIfUserIsAdmin()) {
             return "redirect:/pages/auteurs"; // Redirect if the user is not an admin
         }
         auteurService.deleteAuthor(id);
@@ -89,7 +112,7 @@ public class AuteurController {
 
     @GetMapping("/editAuteur/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
-        if (!checkIfUserIsAdmin()) {
+        if (!authService.checkIfUserIsAdmin()) {
             return "redirect:/pages/auteurs"; // Redirect if the user is not an admin
         }
         AuteurDTO auteurDTO = auteurService.getAuthorById(id);
@@ -98,8 +121,15 @@ public class AuteurController {
     }
 
     @PostMapping("/updateAuteur/{id}")
+    @Operation(summary = "Met à jour un auteur existant", description = "Met à jour les détails d'un auteur spécifié par son identifiant.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "302", description = "Auteur mis à jour avec succès, redirection vers la liste des auteurs"),
+            @ApiResponse(responseCode = "403", description = "Accès refusé, l'utilisateur n'est pas administrateur"),
+            @ApiResponse(responseCode = "404", description = "Auteur non trouvé"),
+            @ApiResponse(responseCode = "400", description = "Données invalides pour l'auteur")
+    })
     public String updateAuteur(@PathVariable Long id, @ModelAttribute AuteurDTO auteurDTO) {
-        if (!checkIfUserIsAdmin()) {
+        if (!authService.checkIfUserIsAdmin()) {
 
             return "redirect:/pages/auteurs"; // Redirect if the user is not an admin
         }
@@ -107,15 +137,5 @@ public class AuteurController {
         return "redirect:/pages/auteurs";
     }
 
-    private boolean checkIfUserIsAdmin() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        if (auth != null) {
-            Object principal = auth.getPrincipal();
-            if (principal instanceof UserDetails userDetails) {
-                return userDetails.getAuthorities().stream()
-                        .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
-            }
-        }
-        return false;
-    }
+
 }

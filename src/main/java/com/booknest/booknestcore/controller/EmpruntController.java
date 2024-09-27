@@ -10,6 +10,9 @@ import com.booknest.booknestcore.repository.DemandeEmpruntRepository;
 import com.booknest.booknestcore.repository.EmpruntRepository;
 import com.booknest.booknestcore.repository.LivreRepository;
 import com.booknest.booknestcore.service.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -53,6 +56,11 @@ public class EmpruntController {
     private LivreRepository livreRepository;
 
     @GetMapping("/emprunts")
+    @Operation(summary = "Récupère tous les emprunts", description = "Renvoie une liste de tous les emprunts, avec filtrage optionnel.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Liste des emprunts récupérée avec succès"),
+            @ApiResponse(responseCode = "404", description = "Aucun emprunt trouvé")
+    })
     public String getAllEmprunts(@RequestParam(value = "search", required = false) String search, Model model,RedirectAttributes redirectAttributes) {
         // Vérifiez si des messages d'erreur ou d'information sont disponibles
         if (redirectAttributes.getFlashAttributes().containsKey("errorMessage")) {
@@ -126,6 +134,12 @@ public class EmpruntController {
     }
 
     @PostMapping("/creer")
+    @Operation(summary = "Crée un nouvel emprunt", description = "Crée un emprunt en fonction des informations fournies.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "302", description = "Emprunt créé avec succès, redirection vers la liste des emprunts"),
+            @ApiResponse(responseCode = "400", description = "Requête invalide, vérifiez les paramètres fournis"),
+            @ApiResponse(responseCode = "404", description = "Livre ou utilisateur non trouvé")
+    })
     public String creerEmprunt(@RequestParam Long livreId,
                                @RequestParam LocalDate dateEmprunt,
                                @RequestParam LocalDate dateRetour,
@@ -178,6 +192,12 @@ public class EmpruntController {
     }
 
     @PostMapping("/creerDemande")
+    @Operation(summary = "Crée une demande d'emprunt", description = "Permet à un utilisateur de soumettre une demande d'emprunt.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "302", description = "Demande d'emprunt créée avec succès, redirection vers la liste des emprunts"),
+            @ApiResponse(responseCode = "400", description = "Requête invalide, vérifiez les paramètres fournis"),
+            @ApiResponse(responseCode = "404", description = "Livre non trouvé")
+    })
     public String creerDemande(@RequestParam Long livreId, @RequestParam LocalDate dateEmprunt, @RequestParam LocalDate dateRetour, Model model) {
         // Récupérer le nom de l'utilisateur connecté
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -263,6 +283,12 @@ public class EmpruntController {
     }
 
     @PostMapping("/retour/{id}")
+    @Operation(summary = "Retourne un livre emprunté", description = "Enregistre le retour d'un livre emprunté.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "302", description = "Livre retourné avec succès"),
+            @ApiResponse(responseCode = "404", description = "Emprunt non trouvé"),
+            @ApiResponse(responseCode = "400", description = "Erreur lors du retour du livre")
+    })
     public String retournerLivre(@PathVariable Long id, Model model) {
         try {
             empruntService.retournerLivre(id);
@@ -289,6 +315,12 @@ public class EmpruntController {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/updateEmprunt/{id}")
+    @Operation(summary = "Met à jour un emprunt existant", description = "Met à jour les détails d'un emprunt existant.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "302", description = "Emprunt mis à jour avec succès, redirection vers la liste des emprunts"),
+            @ApiResponse(responseCode = "400", description = "Requête invalide, vérifiez les détails de l'emprunt"),
+            @ApiResponse(responseCode = "404", description = "Emprunt non trouvé")
+    })
     public String updateEmprunt(@PathVariable Long id, @ModelAttribute("emprunt") @Valid EmpruntDTO emprunt, BindingResult bindingResult, Model model) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("livres", livreService.getAllLivres());
